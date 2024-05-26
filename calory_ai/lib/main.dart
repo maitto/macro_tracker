@@ -54,11 +54,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _saveData(int calories, int protein) async {
     final prefs = await SharedPreferences.getInstance();
-    final newEntry = DataEntry(date: DateTime.now(), calories: calories, protein: protein);
+    final newEntry =
+        DataEntry(date: DateTime.now(), calories: calories, protein: protein);
     setState(() {
       _entries.add(newEntry);
     });
-    final String dataString = jsonEncode(_entries.map((entry) => entry.toJson()).toList());
+    final String dataString =
+        jsonEncode(_entries.map((entry) => entry.toJson()).toList());
     await prefs.setString('dataEntries', dataString);
   }
 
@@ -95,10 +97,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Date: ${entry.date.toLocal().toString().split(' ')[0]}'),
+                        Text(
+                            'Date: ${entry.date.toLocal().toString().split(' ')[0]}'),
                         Text('Calories: ${entry.calories}'),
-                        Text('Protein: ${entry.protein} g'),
-                        SizedBox(height: 10),
+                        Text('Protein: ${entry.protein}'),
+                        const SizedBox(height: 10),
                       ],
                     );
                   }).toList(),
@@ -192,7 +195,7 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
                   TextFormField(
                     controller: _proteinController,
                     decoration: const InputDecoration(
-                      labelText: 'Protein (g)',
+                      labelText: 'Protein',
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
@@ -220,13 +223,14 @@ class DataEntry {
   final int calories;
   final int protein;
 
-  DataEntry({required this.date, required this.calories, required this.protein});
+  DataEntry(
+      {required this.date, required this.calories, required this.protein});
 
   Map<String, dynamic> toJson() => {
-    'date': date.toIso8601String(),
-    'calories': calories,
-    'protein': protein,
-  };
+        'date': date.toIso8601String(),
+        'calories': calories,
+        'protein': protein,
+      };
 
   factory DataEntry.fromJson(Map<String, dynamic> json) {
     return DataEntry(
