@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -31,8 +33,34 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _calories = 0;
-  int _protein = 0;
+  List<DataEntry> _entries = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? dataString = prefs.getString('dataEntries');
+    if (dataString != null) {
+      final List<dynamic> dataJson = jsonDecode(dataString);
+      setState(() {
+        _entries = dataJson.map((json) => DataEntry.fromJson(json)).toList();
+      });
+    }
+  }
+
+  Future<void> _saveData(int calories, int protein) async {
+    final prefs = await SharedPreferences.getInstance();
+    final newEntry = DataEntry(date: DateTime.now(), calories: calories, protein: protein);
+    setState(() {
+      _entries.add(newEntry);
+    });
+    final String dataString = jsonEncode(_entries.map((entry) => entry.toJson()).toList());
+    await prefs.setString('dataEntries', dataString);
+  }
 
   void _showActionSheet(BuildContext context) {
     showModalBottomSheet(
@@ -41,10 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
       builder: (BuildContext context) {
         return ModalSheetContent(
           onSave: (calories, protein) {
-            setState(() {
-              _calories += calories;
-              _protein += protein;
-            });
+            _saveData(calories, protein);
           },
         );
       },
@@ -62,14 +87,21 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            if (_calories != null && _protein != null)
+            if (_entries.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  children: [
-                    Text('Calories: $_calories'),
-                    Text('Protein: $_protein g'),
-                  ],
+                  children: _entries.map((entry) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Date: ${entry.date.toLocal().toString().split(' ')[0]}'),
+                        Text('Calories: ${entry.calories}'),
+                        Text('Protein: ${entry.protein} g'),
+                        SizedBox(height: 10),
+                      ],
+                    );
+                  }).toList(),
                 ),
               ),
           ],
@@ -77,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showActionSheet(context),
-        tooltip: 'Increment',
+        tooltip: 'Add Entry',
         child: const Icon(Icons.add),
       ),
     );
@@ -179,6 +211,28 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
           );
         },
       ),
+    );
+  }
+}
+
+class DataEntry {
+  final DateTime date;
+  final int calories;
+  final int protein;
+
+  DataEntry({required this.date, required this.calories, required this.protein});
+
+  Map<String, dynamic> toJson() => {
+    'date': date.toIso8601String(),
+    'calories': calories,
+    'protein': protein,
+  };
+
+  factory DataEntry.fromJson(Map<String, dynamic> json) {
+    return DataEntry(
+      date: DateTime.parse(json['date']),
+      calories: json['calories'],
+      protein: json['protein'],
     );
   }
 }
