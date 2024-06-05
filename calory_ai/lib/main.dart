@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,11 +35,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<DataEntry> _entries = [];
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController();
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -49,6 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _entries = dataJson.map((json) => DataEntry.fromJson(json)).toList();
       });
+
+      if (_entries.isNotEmpty) {
+        _pageController.jumpToPage(_entries.length - 1);
+      }
     }
   }
 
@@ -70,12 +83,14 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       if (!entryExists) {
-        final newEntry = DataEntry(date: today, calories: calories, protein: protein);
+        final newEntry =
+            DataEntry(date: today, calories: calories, protein: protein);
         _entries.add(newEntry);
       }
     });
 
-    final String dataString = jsonEncode(_entries.map((entry) => entry.toJson()).toList());
+    final String dataString =
+        jsonEncode(_entries.map((entry) => entry.toJson()).toList());
     await prefs.setString('dataEntries', dataString);
   }
 
@@ -99,31 +114,65 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              // Navigate to settings page or show settings dialog
+            },
+          ),
+        ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            if (_entries.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: _entries.map((entry) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                            'Date: ${entry.date.toLocal().toString().split(' ')[0]}'),
-                        Text('Calories: ${entry.calories}'),
-                        Text('Protein: ${entry.protein} g'),
-                        const SizedBox(height: 10),
-                      ],
-                    );
-                  }).toList(),
-                ),
+      body: PageView.builder(
+        controller: _pageController,
+        itemCount: _entries.length,
+        itemBuilder: (context, index) {
+          final entry = _entries[index];
+          final formattedDate = DateFormat('MMMM d, y').format(entry.date);
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$formattedDate',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      const Icon(Icons.local_fire_department,
+                          color: Colors.orange),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Calories: ${entry.calories}',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Icon(Icons.fitness_center, color: Colors.blue),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Protein: ${entry.protein} g',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-          ],
-        ),
+            ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showActionSheet(context),
