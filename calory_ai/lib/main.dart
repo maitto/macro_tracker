@@ -54,13 +54,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _saveData(int calories, int protein) async {
     final prefs = await SharedPreferences.getInstance();
-    final newEntry =
-        DataEntry(date: DateTime.now(), calories: calories, protein: protein);
+    final today = DateTime.now();
+    bool entryExists = false;
+
     setState(() {
-      _entries.add(newEntry);
+      for (var entry in _entries) {
+        if (entry.date.year == today.year &&
+            entry.date.month == today.month &&
+            entry.date.day == today.day) {
+          entry.calories += calories;
+          entry.protein += protein;
+          entryExists = true;
+          break;
+        }
+      }
+
+      if (!entryExists) {
+        final newEntry = DataEntry(date: today, calories: calories, protein: protein);
+        _entries.add(newEntry);
+      }
     });
-    final String dataString =
-        jsonEncode(_entries.map((entry) => entry.toJson()).toList());
+
+    final String dataString = jsonEncode(_entries.map((entry) => entry.toJson()).toList());
     await prefs.setString('dataEntries', dataString);
   }
 
@@ -100,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Text(
                             'Date: ${entry.date.toLocal().toString().split(' ')[0]}'),
                         Text('Calories: ${entry.calories}'),
-                        Text('Protein: ${entry.protein}'),
+                        Text('Protein: ${entry.protein} g'),
                         const SizedBox(height: 10),
                       ],
                     );
@@ -219,9 +234,9 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
 }
 
 class DataEntry {
-  final DateTime date;
-  final int calories;
-  final int protein;
+  DateTime date;
+  int calories;
+  int protein;
 
   DataEntry(
       {required this.date, required this.calories, required this.protein});
