@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'settings_page.dart';
+import 'data_entry.dart';
 
 void main() {
   runApp(const MyApp());
@@ -148,75 +149,152 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: PageView.builder(
-        controller: _pageController,
-        itemCount: _entries.length,
-        itemBuilder: (context, index) {
-          final entry = _entries[index];
-          final formattedDate = DateFormat('MMMM d, y').format(entry.date);
-          final double calorieProgress =
-              (_calorieGoal > 0) ? entry.calories / _calorieGoal : 0.0;
-          final double proteinProgress =
-              (_proteinGoal > 0) ? entry.protein / _proteinGoal : 0.0;
+      body: Column(
+        children: [
+          WeeklyStats(entries: _entries), // Add the weekly stats widget
+          Expanded(
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: _entries.length,
+              itemBuilder: (context, index) {
+                final entry = _entries[index];
+                final formattedDate =
+                    DateFormat('EEEE, MMMM d, y').format(entry.date);
+                final double calorieProgress =
+                    (_calorieGoal > 0) ? entry.calories / _calorieGoal : 0.0;
+                final double proteinProgress =
+                    (_proteinGoal > 0) ? entry.protein / _proteinGoal : 0.0;
 
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$formattedDate',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '$formattedDate',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          const Icon(Icons.local_fire_department,
+                              color: Colors.orange),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Calories: ${entry.calories} / $_calorieGoal',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      LinearProgressIndicator(
+                        value: calorieProgress > 1 ? 1 : calorieProgress,
+                        backgroundColor: Colors.grey[300],
+                        color: calorieProgress > 1 ? Colors.red : Colors.orange,
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          const Icon(Icons.fitness_center, color: Colors.blue),
+                          const SizedBox(width: 10),
+                          Text(
+                            'Protein: ${entry.protein} g / $_proteinGoal g',
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      LinearProgressIndicator(
+                        value: proteinProgress > 1 ? 1 : proteinProgress,
+                        backgroundColor: Colors.grey[300],
+                        color: proteinProgress > 1 ? Colors.red : Colors.blue,
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    const Icon(Icons.local_fire_department,
-                        color: Colors.orange),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Calories: ${entry.calories} / $_calorieGoal',
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                LinearProgressIndicator(
-                  value: calorieProgress > 1 ? 1 : calorieProgress,
-                  backgroundColor: Colors.grey[300],
-                  color: calorieProgress > 1 ? Colors.red : Colors.orange,
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  children: [
-                    const Icon(Icons.fitness_center, color: Colors.blue),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Protein: ${entry.protein} g / $_proteinGoal g',
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                LinearProgressIndicator(
-                  value: proteinProgress > 1 ? 1 : proteinProgress,
-                  backgroundColor: Colors.grey[300],
-                  color: proteinProgress > 1 ? Colors.red : Colors.blue,
-                ),
-              ],
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showActionSheet(context),
         tooltip: 'Add Entry',
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+
+class WeeklyStats extends StatelessWidget {
+  final List<DataEntry> entries;
+
+  const WeeklyStats({required this.entries, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    final endOfWeek = startOfWeek.add(Duration(days: 6));
+
+    int totalCalories = 0;
+    int totalProtein = 0;
+
+    for (var entry in entries) {
+      if (entry.date.isAfter(startOfWeek) &&
+          entry.date.isBefore(endOfWeek.add(Duration(days: 1)))) {
+        totalCalories += entry.calories;
+        totalProtein += entry.protein;
+      }
+    }
+
+    final formattedStartOfWeek = DateFormat('MMM d').format(startOfWeek);
+    final formattedEndOfWeek = DateFormat('MMM d').format(endOfWeek);
+
+    return Card(
+      margin: EdgeInsets.all(16.0),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Weekly Stats ($formattedStartOfWeek - $formattedEndOfWeek)',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const Icon(Icons.local_fire_department, color: Colors.orange),
+                const SizedBox(width: 10),
+                Text(
+                  'Total Calories: $totalCalories',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                const Icon(Icons.fitness_center, color: Colors.blue),
+                const SizedBox(width: 10),
+                Text(
+                  'Total Protein: $totalProtein g',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -317,29 +395,6 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
           );
         },
       ),
-    );
-  }
-}
-
-class DataEntry {
-  DateTime date;
-  int calories;
-  int protein;
-
-  DataEntry(
-      {required this.date, required this.calories, required this.protein});
-
-  Map<String, dynamic> toJson() => {
-        'date': date.toIso8601String(),
-        'calories': calories,
-        'protein': protein,
-      };
-
-  factory DataEntry.fromJson(Map<String, dynamic> json) {
-    return DataEntry(
-      date: DateTime.parse(json['date']),
-      calories: json['calories'],
-      protein: json['protein'],
     );
   }
 }
