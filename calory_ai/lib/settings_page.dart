@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
+  final Function(int, int) onGoalsChanged;
+
+  const SettingsPage({required this.onGoalsChanged, super.key});
+
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -19,15 +23,20 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _loadGoals() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _calorieGoalController.text = (prefs.getInt('calorieGoal') ?? 0).toString();
-      _proteinGoalController.text = (prefs.getInt('proteinGoal') ?? 0).toString();
+      _calorieGoalController.text = (prefs.getInt('calorieGoal') ?? 2800).toString();
+      _proteinGoalController.text = (prefs.getInt('proteinGoal') ?? 180).toString();
     });
   }
 
   Future<void> _saveGoals() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('calorieGoal', int.parse(_calorieGoalController.text));
-    await prefs.setInt('proteinGoal', int.parse(_proteinGoalController.text));
+    final int calorieGoal = int.parse(_calorieGoalController.text);
+    final int proteinGoal = int.parse(_proteinGoalController.text);
+
+    await prefs.setInt('calorieGoal', calorieGoal);
+    await prefs.setInt('proteinGoal', proteinGoal);
+
+    widget.onGoalsChanged(calorieGoal, proteinGoal);
   }
 
   @override
@@ -41,7 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Settings'),
+        title: const Text('Settings'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -49,21 +58,21 @@ class _SettingsPageState extends State<SettingsPage> {
           children: [
             TextField(
               controller: _calorieGoalController,
-              decoration: InputDecoration(labelText: 'Calorie Goal'),
+              decoration: const InputDecoration(labelText: 'Calorie Goal'),
               keyboardType: TextInputType.number,
             ),
             TextField(
               controller: _proteinGoalController,
-              decoration: InputDecoration(labelText: 'Protein Goal (g)'),
+              decoration: const InputDecoration(labelText: 'Protein Goal (g)'),
               keyboardType: TextInputType.number,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 _saveGoals();
                 Navigator.of(context).pop();
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         ),

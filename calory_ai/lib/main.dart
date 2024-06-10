@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'settings_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,18 +37,36 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<DataEntry> _entries = [];
   late PageController _pageController;
+  int _calorieGoal = 2800;
+  int _proteinGoal = 180;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController();
     _loadData();
+    _loadGoals();
   }
 
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadGoals() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _calorieGoal = prefs.getInt('calorieGoal') ?? 2800;
+      _proteinGoal = prefs.getInt('proteinGoal') ?? 180;
+    });
+  }
+
+  void _updateGoals(int calorieGoal, int proteinGoal) {
+    setState(() {
+      _calorieGoal = calorieGoal;
+      _proteinGoal = proteinGoal;
+    });
   }
 
   Future<void> _loadData() async {
@@ -118,7 +137,13 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              // Navigate to settings page or show settings dialog
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage(
+                    onGoalsChanged: _updateGoals,
+                  ),
+                ),
+              );
             },
           ),
         ],
@@ -129,47 +154,61 @@ class _MyHomePageState extends State<MyHomePage> {
         itemBuilder: (context, index) {
           final entry = _entries[index];
           final formattedDate = DateFormat('MMMM d, y').format(entry.date);
+          final double calorieProgress =
+              (_calorieGoal > 0) ? entry.calories / _calorieGoal : 0.0;
+          final double proteinProgress =
+              (_proteinGoal > 0) ? entry.protein / _proteinGoal : 0.0;
+
           return Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '$formattedDate',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$formattedDate',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Icon(Icons.local_fire_department,
+                        color: Colors.orange),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Calories: ${entry.calories} / $_calorieGoal',
+                      style: const TextStyle(fontSize: 18),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      const Icon(Icons.local_fire_department,
-                          color: Colors.orange),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Calories: ${entry.calories}',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      const Icon(Icons.fitness_center, color: Colors.blue),
-                      const SizedBox(width: 10),
-                      Text(
-                        'Protein: ${entry.protein} g',
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                LinearProgressIndicator(
+                  value: calorieProgress > 1 ? 1 : calorieProgress,
+                  backgroundColor: Colors.grey[300],
+                  color: calorieProgress > 1 ? Colors.red : Colors.orange,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    const Icon(Icons.fitness_center, color: Colors.blue),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Protein: ${entry.protein} g / $_proteinGoal g',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                LinearProgressIndicator(
+                  value: proteinProgress > 1 ? 1 : proteinProgress,
+                  backgroundColor: Colors.grey[300],
+                  color: proteinProgress > 1 ? Colors.red : Colors.blue,
+                ),
+              ],
             ),
           );
         },
