@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'settings_page.dart';
 import 'data_entry.dart';
+import 'modal_sheet_content.dart';
 
 void main() {
   runApp(const MyApp());
@@ -45,22 +46,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<DataEntry> _entries = [];
-  late PageController _pageController;
   int _calorieGoal = 2800;
   int _proteinGoal = 180;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController();
     _loadData();
     _loadGoals();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 
   Future<void> _loadGoals() async {
@@ -86,10 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         _entries = dataJson.map((json) => DataEntry.fromJson(json)).toList();
       });
-
-      if (_entries.isNotEmpty) {
-        _pageController.jumpToPage(_entries.length - 1);
-      }
     }
   }
 
@@ -161,11 +150,10 @@ class _MyHomePageState extends State<MyHomePage> {
         children: [
           WeeklyStats(entries: _entries), // Add the weekly stats widget
           Expanded(
-            child: PageView.builder(
-              controller: _pageController,
+            child: ListView.builder(
               itemCount: _entries.length,
               itemBuilder: (context, index) {
-                final entry = _entries[index];
+                final entry = _entries[_entries.length - 1 - index];
                 final formattedDate =
                     DateFormat('EEEE, MMMM d, y').format(entry.date);
                 final double calorieProgress =
@@ -176,7 +164,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -222,6 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         backgroundColor: Colors.grey[300],
                         color: proteinProgress > 1 ? Colors.red : Colors.blue,
                       ),
+                      const Divider(height: 40, thickness: 1),
                     ],
                   ),
                 );
@@ -303,105 +291,6 @@ class WeeklyStats extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ModalSheetContent extends StatefulWidget {
-  const ModalSheetContent({super.key, required this.onSave});
-
-  final Function(int, int) onSave;
-
-  @override
-  _ModalSheetContentState createState() => _ModalSheetContentState();
-}
-
-class _ModalSheetContentState extends State<ModalSheetContent> {
-  final FocusNode _caloriesFocusNode = FocusNode();
-  final TextEditingController _caloriesController = TextEditingController();
-  final TextEditingController _proteinController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _caloriesFocusNode.requestFocus();
-    });
-  }
-
-  @override
-  void dispose() {
-    _caloriesFocusNode.dispose();
-    _caloriesController.dispose();
-    _proteinController.dispose();
-    super.dispose();
-  }
-
-  void _saveData() {
-    final int? calories = int.tryParse(_caloriesController.text);
-    final int? protein = int.tryParse(_proteinController.text);
-
-    if (calories != null && protein != null) {
-      widget.onSave(calories, protein);
-      Navigator.of(context).pop();
-    } else {
-      // Handle validation error, e.g., show a message to the user
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: DraggableScrollableSheet(
-        expand: false,
-        builder: (context, scrollController) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const Text('Enter Details', style: TextStyle(fontSize: 20)),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    focusNode: _caloriesFocusNode,
-                    controller: _caloriesController,
-                    decoration: const InputDecoration(
-                      labelText: 'Calories',
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    controller: _proteinController,
-                    decoration: const InputDecoration(
-                      labelText: 'Protein',
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: _saveData,
-                    child: const Text('Save'),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
       ),
     );
   }
