@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -110,8 +111,20 @@ class _MyHomePageState extends State<MyHomePage> {
     await prefs.setString('dataEntries', dataString);
   }
 
-  void _showActionSheet(BuildContext context) {
-    showModalBottomSheet(
+  Future<void> _deleteEntry(int index) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    setState(() {
+      _entries.removeAt(index);
+    });
+
+    final String dataString =
+        jsonEncode(_entries.map((entry) => entry.toJson()).toList());
+    await prefs.setString('dataEntries', dataString);
+  }
+
+  Future<void> _showActionSheet(BuildContext context) async {
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
@@ -160,56 +173,71 @@ class _MyHomePageState extends State<MyHomePage> {
                 final double proteinProgress =
                     (_proteinGoal > 0) ? entry.protein / _proteinGoal : 0.0;
 
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        formattedDate,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
+                return Dismissible(
+                  key: Key(entry.date.toIso8601String()),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    _deleteEntry(_entries.length - 1 - index);
+                  },
+                  background: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '$formattedDate',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          const Icon(Icons.local_fire_department,
-                              color: Colors.orange),
-                          const SizedBox(width: 10),
-                          Text(
-                            'Calories: ${entry.calories} / $_calorieGoal',
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      LinearProgressIndicator(
-                        value: calorieProgress > 1 ? 1 : calorieProgress,
-                        backgroundColor: Colors.grey[300],
-                        color: calorieProgress > 1 ? Colors.red : Colors.orange,
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          const Icon(Icons.fitness_center, color: Colors.blue),
-                          const SizedBox(width: 10),
-                          Text(
-                            'Protein: ${entry.protein} g / $_proteinGoal g',
-                            style: const TextStyle(fontSize: 18),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      LinearProgressIndicator(
-                        value: proteinProgress > 1 ? 1 : proteinProgress,
-                        backgroundColor: Colors.grey[300],
-                        color: proteinProgress > 1 ? Colors.red : Colors.blue,
-                      ),
-                      const Divider(height: 40, thickness: 1),
-                    ],
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            const Icon(Icons.local_fire_department,
+                                color: Colors.orange),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Calories: ${entry.calories} / $_calorieGoal',
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        LinearProgressIndicator(
+                          value: calorieProgress > 1 ? 1 : calorieProgress,
+                          backgroundColor: Colors.grey[300],
+                          color:
+                              calorieProgress > 1 ? Colors.red : Colors.orange,
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            const Icon(Icons.fitness_center,
+                                color: Colors.blue),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Protein: ${entry.protein} / $_proteinGoal',
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        LinearProgressIndicator(
+                          value: proteinProgress > 1 ? 1 : proteinProgress,
+                          backgroundColor: Colors.grey[300],
+                          color: proteinProgress > 1 ? Colors.red : Colors.blue,
+                        ),
+                        const Divider(height: 40, thickness: 1),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -229,20 +257,20 @@ class _MyHomePageState extends State<MyHomePage> {
 class WeeklyStats extends StatelessWidget {
   final List<DataEntry> entries;
 
-  const WeeklyStats({required this.entries, super.key});
+  const WeeklyStats({required this.entries, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(const Duration(days: 6));
+    final endOfWeek = startOfWeek.add(Duration(days: 6));
 
     int totalCalories = 0;
     int totalProtein = 0;
 
     for (var entry in entries) {
       if (entry.date.isAfter(startOfWeek) &&
-          entry.date.isBefore(endOfWeek.add(const Duration(days: 1)))) {
+          entry.date.isBefore(endOfWeek.add(Duration(days: 1)))) {
         totalCalories += entry.calories;
         totalProtein += entry.protein;
       }
@@ -252,7 +280,7 @@ class WeeklyStats extends StatelessWidget {
     final formattedEndOfWeek = DateFormat('MMM d').format(endOfWeek);
 
     return Card(
-      margin: const EdgeInsets.all(16.0),
+      margin: EdgeInsets.all(16.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -283,7 +311,7 @@ class WeeklyStats extends StatelessWidget {
                 const Icon(Icons.fitness_center, color: Colors.blue),
                 const SizedBox(width: 10),
                 Text(
-                  'Total Protein: $totalProtein g',
+                  'Total Protein: $totalProtein',
                   style: const TextStyle(fontSize: 18),
                 ),
               ],

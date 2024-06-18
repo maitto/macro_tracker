@@ -23,8 +23,10 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _loadGoals() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _calorieGoalController.text = (prefs.getInt('calorieGoal') ?? 2800).toString();
-      _proteinGoalController.text = (prefs.getInt('proteinGoal') ?? 180).toString();
+      _calorieGoalController.text =
+          (prefs.getInt('calorieGoal') ?? 2800).toString();
+      _proteinGoalController.text =
+          (prefs.getInt('proteinGoal') ?? 180).toString();
     });
   }
 
@@ -63,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             TextField(
               controller: _proteinGoalController,
-              decoration: const InputDecoration(labelText: 'Protein Goal (g)'),
+              decoration: const InputDecoration(labelText: 'Protein Goal'),
               keyboardType: TextInputType.number,
             ),
             const SizedBox(height: 20),
