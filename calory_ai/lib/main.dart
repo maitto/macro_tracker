@@ -84,14 +84,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _saveData(int calories, int protein) async {
     final prefs = await SharedPreferences.getInstance();
-    final today = DateTime.now();
+    final now = DateTime.now();
     bool entryExists = false;
 
     setState(() {
       for (var entry in _entries) {
-        if (entry.date.year == today.year &&
-            entry.date.month == today.month &&
-            entry.date.day == today.day) {
+        if (entry.date.year == now.year &&
+            entry.date.month == now.month &&
+            entry.date.day == now.day &&
+            entry.date.hour == now.hour &&
+            entry.date.minute == now.minute) {
           entry.calories += calories;
           entry.protein += protein;
           entryExists = true;
@@ -101,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       if (!entryExists) {
         final newEntry =
-            DataEntry(date: today, calories: calories, protein: protein);
+            DataEntry(date: now, calories: calories, protein: protein);
         _entries.add(newEntry);
       }
     });
@@ -168,6 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 final entry = _entries[_entries.length - 1 - index];
                 final formattedDate =
                     DateFormat('EEEE, MMMM d, y').format(entry.date);
+                final formattedTime = DateFormat('h:mm a').format(entry.date);
                 final double calorieProgress =
                     (_calorieGoal > 0) ? entry.calories / _calorieGoal : 0.0;
                 final double proteinProgress =
@@ -191,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '$formattedDate',
+                          '$formattedTime - $formattedDate',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
