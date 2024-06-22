@@ -93,7 +93,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _saveData(int calories, int protein, String type) async {
     final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now();
-    bool entryExists = false;
 
     setState(() {
       final newEntry = DataEntry(
@@ -113,11 +112,11 @@ class _MyHomePageState extends State<MyHomePage> {
     await prefs.setString('dataEntries', dataString);
   }
 
-  Future<void> _deleteEntry(int index) async {
+  Future<void> _deleteEntry(int entryIndex) async {
     final prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      _entries.removeAt(index);
+      _entries.removeAt(entryIndex);
       _uniqueDates = _entries
           .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
           .toSet()
@@ -145,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _showDeleteMenu(BuildContext context, int index) {
+  void _showDeleteMenu(BuildContext context, int entryIndex) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -158,7 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: Text('Delete Entry'),
                 onTap: () {
                   Navigator.of(context).pop();
-                  _deleteEntry(index);
+                  _deleteEntry(entryIndex);
                 },
               ),
             ],
@@ -203,25 +202,27 @@ class _MyHomePageState extends State<MyHomePage> {
               .toList();
           final formattedDate = DateFormat('EEEE, MMMM d, y').format(date);
 
-          return GestureDetector(
-            onLongPress: () => _showDeleteMenu(context, index),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DailyStats(
-                      entries: entriesForDate,
-                      calorieGoal: _calorieGoal,
-                      proteinGoal: _proteinGoal),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: entriesForDate.map((entry) {
-                        final formattedTime =
-                            DateFormat('h:mm a').format(entry.date);
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DailyStats(
+                    entries: entriesForDate,
+                    calorieGoal: _calorieGoal,
+                    proteinGoal: _proteinGoal),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: entriesForDate.asMap().entries.map((entryMap) {
+                      final entry = entryMap.value;
+                      final formattedTime =
+                          DateFormat('h:mm a').format(entry.date);
+                      final entryIndex = _entries.indexOf(entry);
 
-                        return Column(
+                      return GestureDetector(
+                        onLongPress: () => _showDeleteMenu(context, entryIndex),
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -258,12 +259,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                             const Divider(height: 40, thickness: 1),
                           ],
-                        );
-                      }).toList(),
-                    ),
+                        ),
+                      );
+                    }).toList(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
