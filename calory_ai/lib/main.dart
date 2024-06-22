@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  Future<void> _saveData(int calories, int protein) async {
+  Future<void> _saveData(int calories, int protein, String type) async {
     final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now();
     bool entryExists = false;
@@ -91,8 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (entry.date.year == now.year &&
             entry.date.month == now.month &&
             entry.date.day == now.day &&
-            entry.date.hour == now.hour &&
-            entry.date.minute == now.minute) {
+            entry.type == type) {
           entry.calories += calories;
           entry.protein += protein;
           entryExists = true;
@@ -101,8 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
       }
 
       if (!entryExists) {
-        final newEntry =
-            DataEntry(date: now, calories: calories, protein: protein);
+        final newEntry = DataEntry(
+            date: now, calories: calories, protein: protein, type: type);
         _entries.add(newEntry);
       }
     });
@@ -130,8 +129,8 @@ class _MyHomePageState extends State<MyHomePage> {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return ModalSheetContent(
-          onSave: (calories, protein) {
-            _saveData(calories, protein);
+          onSave: (calories, protein, type) {
+            _saveData(calories, protein, type);
           },
         );
       },
