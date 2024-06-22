@@ -47,10 +47,13 @@ class _MyHomePageState extends State<MyHomePage> {
   List<DataEntry> _entries = [];
   int _calorieGoal = 2800;
   int _proteinGoal = 180;
+  late PageController _pageController;
+  List<DateTime> _uniqueDates = [];
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: 0);
     _loadData();
     _loadGoals();
   }
@@ -77,6 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
       final List<dynamic> dataJson = jsonDecode(dataString);
       setState(() {
         _entries = dataJson.map((json) => DataEntry.fromJson(json)).toList();
+        _uniqueDates = _entries
+            .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
+            .toSet()
+            .toList();
+        _uniqueDates
+            .sort((a, b) => b.compareTo(a)); // Sort dates in descending order
       });
     }
   }
@@ -87,23 +96,16 @@ class _MyHomePageState extends State<MyHomePage> {
     bool entryExists = false;
 
     setState(() {
-      for (var entry in _entries) {
-        if (entry.date.year == now.year &&
-            entry.date.month == now.month &&
-            entry.date.day == now.day &&
-            entry.type == type) {
-          entry.calories += calories;
-          entry.protein += protein;
-          entryExists = true;
-          break;
-        }
-      }
+      final newEntry = DataEntry(
+          date: now, calories: calories, protein: protein, type: type);
+      _entries.add(newEntry);
 
-      if (!entryExists) {
-        final newEntry = DataEntry(
-            date: now, calories: calories, protein: protein, type: type);
-        _entries.add(newEntry);
-      }
+      _uniqueDates = _entries
+          .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
+          .toSet()
+          .toList();
+      _uniqueDates
+          .sort((a, b) => b.compareTo(a)); // Sort dates in descending order
     });
 
     final String dataString =
@@ -116,6 +118,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _entries.removeAt(index);
+      _uniqueDates = _entries
+          .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
+          .toSet()
+          .toList();
+      _uniqueDates
+          .sort((a, b) => b.compareTo(a)); // Sort dates in descending order
     });
 
     final String dataString =
@@ -132,6 +140,29 @@ class _MyHomePageState extends State<MyHomePage> {
           onSave: (calories, protein, type) {
             _saveData(calories, protein, type);
           },
+        );
+      },
+    );
+  }
+
+  void _showDeleteMenu(BuildContext context, int index) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.delete, color: Colors.red),
+                title: Text('Delete Entry'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _deleteEntry(index);
+                },
+              ),
+            ],
+          ),
         );
       },
     );
@@ -158,93 +189,103 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          DailyStats(entries: _entries), // Add the daily stats widget
-          Expanded(
-            child: ListView.builder(
-              itemCount: _entries.length,
-              itemBuilder: (context, index) {
-                final entry = _entries[_entries.length - 1 - index];
-                final formattedDate =
-                    DateFormat('EEEE, MMMM d, y').format(entry.date);
-                final formattedTime = DateFormat('h:mm a').format(entry.date);
-                final double calorieProgress =
-                    (_calorieGoal > 0) ? entry.calories / _calorieGoal : 0.0;
-                final double proteinProgress =
-                    (_proteinGoal > 0) ? entry.protein / _proteinGoal : 0.0;
+      body: PageView.builder(
+        controller: _pageController,
+        itemCount: _uniqueDates.length,
+        reverse: true,
+        itemBuilder: (context, index) {
+          final date = _uniqueDates[index];
+          final entriesForDate = _entries
+              .where((e) =>
+                  e.date.year == date.year &&
+                  e.date.month == date.month &&
+                  e.date.day == date.day)
+              .toList();
+          final formattedDate = DateFormat('EEEE, MMMM d, y').format(date);
 
-                return Dismissible(
-                  key: Key(entry.date.toIso8601String()),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) {
-                    _deleteEntry(_entries.length - 1 - index);
-                  },
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Icon(Icons.delete, color: Colors.white),
-                  ),
-                  child: Padding(
+          return GestureDetector(
+            onLongPress: () => _showDeleteMenu(context, index),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DailyStats(entries: entriesForDate),
+                  Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '$formattedTime - $formattedDate (${entry.type})',
-                          style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
+                      children: entriesForDate.map((entry) {
+                        final formattedTime =
+                            DateFormat('h:mm a').format(entry.date);
+                        final double calorieProgress = (_calorieGoal > 0)
+                            ? entry.calories / _calorieGoal
+                            : 0.0;
+                        final double proteinProgress = (_proteinGoal > 0)
+                            ? entry.protein / _proteinGoal
+                            : 0.0;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Icon(Icons.local_fire_department,
-                                color: Colors.orange),
-                            const SizedBox(width: 10),
                             Text(
-                              'Calories: ${entry.calories} / $_calorieGoal',
-                              style: const TextStyle(fontSize: 18),
+                              '$formattedTime - ${entry.type}',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        LinearProgressIndicator(
-                          value: calorieProgress > 1 ? 1 : calorieProgress,
-                          backgroundColor: Colors.grey[300],
-                          color:
-                              calorieProgress > 1 ? Colors.red : Colors.orange,
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          children: [
-                            const Icon(Icons.fitness_center,
-                                color: Colors.blue),
-                            const SizedBox(width: 10),
-                            Text(
-                              'Protein: ${entry.protein} / $_proteinGoal',
-                              style: const TextStyle(fontSize: 18),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                const Icon(Icons.local_fire_department,
+                                    color: Colors.orange),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Calories: ${entry.calories} / $_calorieGoal',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ],
                             ),
+                            const SizedBox(height: 10),
+                            LinearProgressIndicator(
+                              value: calorieProgress > 1 ? 1 : calorieProgress,
+                              backgroundColor: Colors.grey[300],
+                              color: calorieProgress > 1
+                                  ? Colors.red
+                                  : Colors.orange,
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                const Icon(Icons.fitness_center,
+                                    color: Colors.blue),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Protein: ${entry.protein} / $_proteinGoal',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            LinearProgressIndicator(
+                              value: proteinProgress > 1 ? 1 : proteinProgress,
+                              backgroundColor: Colors.grey[300],
+                              color: proteinProgress > 1
+                                  ? Colors.red
+                                  : Colors.blue,
+                            ),
+                            const Divider(height: 40, thickness: 1),
                           ],
-                        ),
-                        const SizedBox(height: 10),
-                        LinearProgressIndicator(
-                          value: proteinProgress > 1 ? 1 : proteinProgress,
-                          backgroundColor: Colors.grey[300],
-                          color: proteinProgress > 1 ? Colors.red : Colors.blue,
-                        ),
-                        const Divider(height: 40, thickness: 1),
-                      ],
+                        );
+                      }).toList(),
                     ),
                   ),
-                );
-              },
+                ],
+              ),
             ),
-          ),
-        ],
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showActionSheet(context),
@@ -262,21 +303,16 @@ class DailyStats extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-
     int totalCalories = 0;
     int totalProtein = 0;
 
     for (var entry in entries) {
-      if (entry.date.year == now.year &&
-          entry.date.month == now.month &&
-          entry.date.day == now.day) {
-        totalCalories += entry.calories;
-        totalProtein += entry.protein;
-      }
+      totalCalories += entry.calories;
+      totalProtein += entry.protein;
     }
 
-    final formattedDate = DateFormat('EEEE, MMMM d, y').format(now);
+    final formattedDate =
+        DateFormat('EEEE, MMMM d, y').format(entries.first.date);
 
     return Card(
       margin: const EdgeInsets.all(16.0),
@@ -286,7 +322,7 @@ class DailyStats extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Today\'s Stats ($formattedDate)',
+              'Stats for $formattedDate',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
