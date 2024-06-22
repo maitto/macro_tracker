@@ -45,10 +45,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<DataEntry> _entries = [];
+  List<DateTime> _uniqueDates = [];
   int _calorieGoal = 2800;
   int _proteinGoal = 180;
   late PageController _pageController;
-  late List<DateTime> _uniqueDates;
 
   @override
   void initState() {
@@ -203,64 +203,67 @@ class _MyHomePageState extends State<MyHomePage> {
               .toList();
           final formattedDate = DateFormat('EEEE, MMMM d, y').format(date);
 
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                DailyStats(
-                    entries: entriesForDate,
-                    calorieGoal: _calorieGoal,
-                    proteinGoal: _proteinGoal),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: entriesForDate.map((entry) {
-                      final formattedTime =
-                          DateFormat('h:mm a').format(entry.date);
+          return GestureDetector(
+            onLongPress: () => _showDeleteMenu(context, index),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DailyStats(
+                      entries: entriesForDate,
+                      calorieGoal: _calorieGoal,
+                      proteinGoal: _proteinGoal),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: entriesForDate.map((entry) {
+                        final formattedTime =
+                            DateFormat('h:mm a').format(entry.date);
 
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '$formattedTime - ${entry.type}',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.primary,
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '$formattedTime - ${entry.type}',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 20),
-                          Row(
-                            children: [
-                              const Icon(Icons.local_fire_department,
-                                  color: Colors.orange),
-                              const SizedBox(width: 10),
-                              Text(
-                                'Calories: ${entry.calories}',
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              const Icon(Icons.fitness_center,
-                                  color: Colors.blue),
-                              const SizedBox(width: 10),
-                              Text(
-                                'Protein: ${entry.protein}',
-                                style: const TextStyle(fontSize: 18),
-                              ),
-                            ],
-                          ),
-                          const Divider(height: 40, thickness: 1),
-                        ],
-                      );
-                    }).toList(),
+                            const SizedBox(height: 20),
+                            Row(
+                              children: [
+                                const Icon(Icons.local_fire_department,
+                                    color: Colors.orange),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Calories: ${entry.calories}',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                const Icon(Icons.fitness_center,
+                                    color: Colors.blue),
+                                const SizedBox(width: 10),
+                                Text(
+                                  'Protein: ${entry.protein}',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                            const Divider(height: 40, thickness: 1),
+                          ],
+                        );
+                      }).toList(),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
