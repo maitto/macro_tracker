@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _calorieGoal = 2800;
   int _proteinGoal = 180;
   late PageController _pageController;
-  List<DateTime> _uniqueDates = [];
+  late List<DateTime> _uniqueDates;
 
   @override
   void initState() {
@@ -96,9 +96,23 @@ class _MyHomePageState extends State<MyHomePage> {
     bool entryExists = false;
 
     setState(() {
-      final newEntry = DataEntry(
-          date: now, calories: calories, protein: protein, type: type);
-      _entries.add(newEntry);
+      for (var entry in _entries) {
+        if (entry.date.year == now.year &&
+            entry.date.month == now.month &&
+            entry.date.day == now.day &&
+            entry.type == type) {
+          entry.calories += calories;
+          entry.protein += protein;
+          entryExists = true;
+          break;
+        }
+      }
+
+      if (!entryExists) {
+        final newEntry = DataEntry(
+            date: now, calories: calories, protein: protein, type: type);
+        _entries.add(newEntry);
+      }
 
       _uniqueDates = _entries
           .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
@@ -203,86 +217,64 @@ class _MyHomePageState extends State<MyHomePage> {
               .toList();
           final formattedDate = DateFormat('EEEE, MMMM d, y').format(date);
 
-          return GestureDetector(
-            onLongPress: () => _showDeleteMenu(context, index),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DailyStats(entries: entriesForDate),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: entriesForDate.map((entry) {
-                        final formattedTime =
-                            DateFormat('h:mm a').format(entry.date);
-                        final double calorieProgress = (_calorieGoal > 0)
-                            ? entry.calories / _calorieGoal
-                            : 0.0;
-                        final double proteinProgress = (_proteinGoal > 0)
-                            ? entry.protein / _proteinGoal
-                            : 0.0;
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                DailyStats(
+                    entries: entriesForDate,
+                    calorieGoal: _calorieGoal,
+                    proteinGoal: _proteinGoal),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: entriesForDate.map((entry) {
+                      final formattedTime =
+                          DateFormat('h:mm a').format(entry.date);
 
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '$formattedTime - ${entry.type}',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '$formattedTime - ${entry.type}',
+                            style: TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            children: [
+                              const Icon(Icons.local_fire_department,
+                                  color: Colors.orange),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Calories: ${entry.calories}',
+                                style: const TextStyle(fontSize: 18),
                               ),
-                            ),
-                            const SizedBox(height: 20),
-                            Row(
-                              children: [
-                                const Icon(Icons.local_fire_department,
-                                    color: Colors.orange),
-                                const SizedBox(width: 10),
-                                Text(
-                                  'Calories: ${entry.calories} / $_calorieGoal',
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            LinearProgressIndicator(
-                              value: calorieProgress > 1 ? 1 : calorieProgress,
-                              backgroundColor: Colors.grey[300],
-                              color: calorieProgress > 1
-                                  ? Colors.red
-                                  : Colors.orange,
-                            ),
-                            const SizedBox(height: 20),
-                            Row(
-                              children: [
-                                const Icon(Icons.fitness_center,
-                                    color: Colors.blue),
-                                const SizedBox(width: 10),
-                                Text(
-                                  'Protein: ${entry.protein} / $_proteinGoal',
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            LinearProgressIndicator(
-                              value: proteinProgress > 1 ? 1 : proteinProgress,
-                              backgroundColor: Colors.grey[300],
-                              color: proteinProgress > 1
-                                  ? Colors.red
-                                  : Colors.blue,
-                            ),
-                            const Divider(height: 40, thickness: 1),
-                          ],
-                        );
-                      }).toList(),
-                    ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              const Icon(Icons.fitness_center,
+                                  color: Colors.blue),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Protein: ${entry.protein}',
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ],
+                          ),
+                          const Divider(height: 40, thickness: 1),
+                        ],
+                      );
+                    }).toList(),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
@@ -298,8 +290,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class DailyStats extends StatelessWidget {
   final List<DataEntry> entries;
+  final int calorieGoal;
+  final int proteinGoal;
 
-  const DailyStats({required this.entries, super.key});
+  const DailyStats(
+      {required this.entries,
+      required this.calorieGoal,
+      required this.proteinGoal,
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -313,6 +311,11 @@ class DailyStats extends StatelessWidget {
 
     final formattedDate =
         DateFormat('EEEE, MMMM d, y').format(entries.first.date);
+
+    final double calorieProgress =
+        (calorieGoal > 0) ? totalCalories / calorieGoal : 0.0;
+    final double proteinProgress =
+        (proteinGoal > 0) ? totalProtein / proteinGoal : 0.0;
 
     return Card(
       margin: const EdgeInsets.all(16.0),
@@ -335,21 +338,33 @@ class DailyStats extends StatelessWidget {
                 const Icon(Icons.local_fire_department, color: Colors.orange),
                 const SizedBox(width: 10),
                 Text(
-                  'Total Calories: $totalCalories',
+                  'Total Calories: $totalCalories / $calorieGoal',
                   style: const TextStyle(fontSize: 18),
                 ),
               ],
             ),
             const SizedBox(height: 10),
+            LinearProgressIndicator(
+              value: calorieProgress > 1 ? 1 : calorieProgress,
+              backgroundColor: Colors.grey[300],
+              color: calorieProgress > 1 ? Colors.red : Colors.orange,
+            ),
+            const SizedBox(height: 20),
             Row(
               children: [
                 const Icon(Icons.fitness_center, color: Colors.blue),
                 const SizedBox(width: 10),
                 Text(
-                  'Total Protein: $totalProtein',
+                  'Total Protein: $totalProtein / $proteinGoal',
                   style: const TextStyle(fontSize: 18),
                 ),
               ],
+            ),
+            const SizedBox(height: 10),
+            LinearProgressIndicator(
+              value: proteinProgress > 1 ? 1 : proteinProgress,
+              backgroundColor: Colors.grey[300],
+              color: proteinProgress > 1 ? Colors.red : Colors.blue,
             ),
           ],
         ),
