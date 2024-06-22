@@ -160,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          WeeklyStats(entries: _entries), // Add the weekly stats widget
+          DailyStats(entries: _entries), // Add the daily stats widget
           Expanded(
             child: ListView.builder(
               itemCount: _entries.length,
@@ -192,7 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '$formattedTime - $formattedDate',
+                          '$formattedTime - $formattedDate (${entry.type})',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -255,30 +255,28 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class WeeklyStats extends StatelessWidget {
+class DailyStats extends StatelessWidget {
   final List<DataEntry> entries;
 
-  const WeeklyStats({required this.entries, super.key});
+  const DailyStats({required this.entries, super.key});
 
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(const Duration(days: 6));
 
     int totalCalories = 0;
     int totalProtein = 0;
 
     for (var entry in entries) {
-      if (entry.date.isAfter(startOfWeek) &&
-          entry.date.isBefore(endOfWeek.add(const Duration(days: 1)))) {
+      if (entry.date.year == now.year &&
+          entry.date.month == now.month &&
+          entry.date.day == now.day) {
         totalCalories += entry.calories;
         totalProtein += entry.protein;
       }
     }
 
-    final formattedStartOfWeek = DateFormat('MMM d').format(startOfWeek);
-    final formattedEndOfWeek = DateFormat('MMM d').format(endOfWeek);
+    final formattedDate = DateFormat('EEEE, MMMM d, y').format(now);
 
     return Card(
       margin: const EdgeInsets.all(16.0),
@@ -288,7 +286,7 @@ class WeeklyStats extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Weekly Stats ($formattedStartOfWeek - $formattedEndOfWeek)',
+              'Today\'s Stats ($formattedDate)',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
