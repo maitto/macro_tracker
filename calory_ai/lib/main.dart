@@ -96,23 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
     bool entryExists = false;
 
     setState(() {
-      for (var entry in _entries) {
-        if (entry.date.year == now.year &&
-            entry.date.month == now.month &&
-            entry.date.day == now.day &&
-            entry.type == type) {
-          entry.calories += calories;
-          entry.protein += protein;
-          entryExists = true;
-          break;
-        }
-      }
-
-      if (!entryExists) {
-        final newEntry = DataEntry(
-            date: now, calories: calories, protein: protein, type: type);
-        _entries.add(newEntry);
-      }
+      final newEntry = DataEntry(
+          date: now, calories: calories, protein: protein, type: type);
+      _entries.add(newEntry);
 
       _uniqueDates = _entries
           .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
