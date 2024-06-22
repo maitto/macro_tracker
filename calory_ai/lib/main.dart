@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:intl/intl.dart';
@@ -260,20 +259,20 @@ class _MyHomePageState extends State<MyHomePage> {
 class WeeklyStats extends StatelessWidget {
   final List<DataEntry> entries;
 
-  const WeeklyStats({required this.entries, Key? key}) : super(key: key);
+  const WeeklyStats({required this.entries, super.key});
 
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(Duration(days: 6));
+    final endOfWeek = startOfWeek.add(const Duration(days: 6));
 
     int totalCalories = 0;
     int totalProtein = 0;
 
     for (var entry in entries) {
       if (entry.date.isAfter(startOfWeek) &&
-          entry.date.isBefore(endOfWeek.add(Duration(days: 1)))) {
+          entry.date.isBefore(endOfWeek.add(const Duration(days: 1)))) {
         totalCalories += entry.calories;
         totalProtein += entry.protein;
       }
@@ -283,7 +282,7 @@ class WeeklyStats extends StatelessWidget {
     final formattedEndOfWeek = DateFormat('MMM d').format(endOfWeek);
 
     return Card(
-      margin: EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(16.0),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
