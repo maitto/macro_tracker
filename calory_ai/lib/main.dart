@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'settings_page.dart';
 import 'data_entry.dart';
 import 'modal_sheet_content.dart';
+import 'modal_sheet_content_ai.dart';
 
 void main() {
   runApp(const MyApp());
@@ -144,6 +145,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Future<void> _showActionSheetAi(BuildContext context) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return ModalSheetContent(
+          onSave: (calories, protein, type) {
+            _saveData(calories, protein, type);
+          },
+        );
+      },
+    );
+  }
+
   void _showDeleteMenu(BuildContext context, int entryIndex) {
     showModalBottomSheet(
       context: context,
@@ -170,111 +185,120 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => SettingsPage(
-                    onGoalsChanged: _updateGoals,
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text(widget.title),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SettingsPage(
+                      onGoalsChanged: _updateGoals,
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      body: PageView.builder(
-        controller: _pageController,
-        itemCount: _uniqueDates.length,
-        reverse: true,
-        itemBuilder: (context, index) {
-          final date = _uniqueDates[index];
-          final entriesForDate = _entries
-              .where((e) =>
-                  e.date.year == date.year &&
-                  e.date.month == date.month &&
-                  e.date.day == date.day)
-              .toList();
-          final formattedDate = DateFormat('EEEE, MMMM d, y').format(date);
-
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                DailyStats(
-                    entries: entriesForDate,
-                    calorieGoal: _calorieGoal,
-                    proteinGoal: _proteinGoal),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: entriesForDate.asMap().entries.map((entryMap) {
-                      final entry = entryMap.value;
-                      final formattedTime =
-                          DateFormat('h:mm a').format(entry.date);
-                      final entryIndex = _entries.indexOf(entry);
-
-                      return GestureDetector(
-                        onLongPress: () => _showDeleteMenu(context, entryIndex),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '$formattedTime - ${entry.type}',
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            Row(
-                              children: [
-                                const Icon(Icons.local_fire_department,
-                                    color: Colors.orange),
-                                const SizedBox(width: 10),
-                                Text(
-                                  'Calories: ${entry.calories}',
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                const Icon(Icons.fitness_center,
-                                    color: Colors.blue),
-                                const SizedBox(width: 10),
-                                Text(
-                                  'Protein: ${entry.protein}',
-                                  style: const TextStyle(fontSize: 18),
-                                ),
-                              ],
-                            ),
-                            const Divider(height: 40, thickness: 1),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
+                );
+              },
             ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showActionSheet(context),
-        tooltip: 'Add Entry',
-        child: const Icon(Icons.add),
-      ),
-    );
+          ],
+        ),
+        body: PageView.builder(
+          controller: _pageController,
+          itemCount: _uniqueDates.length,
+          reverse: true,
+          itemBuilder: (context, index) {
+            final date = _uniqueDates[index];
+            final entriesForDate = _entries
+                .where((e) =>
+                    e.date.year == date.year &&
+                    e.date.month == date.month &&
+                    e.date.day == date.day)
+                .toList();
+            final formattedDate = DateFormat('EEEE, MMMM d, y').format(date);
+
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  DailyStats(
+                      entries: entriesForDate,
+                      calorieGoal: _calorieGoal,
+                      proteinGoal: _proteinGoal),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: entriesForDate.asMap().entries.map((entryMap) {
+                        final entry = entryMap.value;
+                        final formattedTime =
+                            DateFormat('h:mm a').format(entry.date);
+                        final entryIndex = _entries.indexOf(entry);
+
+                        return GestureDetector(
+                          onLongPress: () =>
+                              _showDeleteMenu(context, entryIndex),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '$formattedTime - ${entry.type}',
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Row(
+                                children: [
+                                  const Icon(Icons.local_fire_department,
+                                      color: Colors.orange),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Calories: ${entry.calories}',
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  const Icon(Icons.fitness_center,
+                                      color: Colors.blue),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    'Protein: ${entry.protein}',
+                                    style: const TextStyle(fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                              const Divider(height: 40, thickness: 1),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        floatingActionButton:
+            Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+          FloatingActionButton(
+            onPressed: () => _showActionSheet(context),
+            tooltip: 'Add Entry',
+            child: const Icon(Icons.add),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () => _showActionSheetAi(context),
+            tooltip: 'Add Entry with AI',
+            child: const Icon(Icons.chat),
+          )
+        ]));
   }
 }
 
