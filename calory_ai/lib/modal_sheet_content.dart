@@ -23,7 +23,7 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
   late TextEditingController _caloriesController;
   late TextEditingController _proteinController;
   String _selectedType = 'Breakfast';
-  List<String> _mealTypes = ['Breakfast', 'Lunch', 'Snack', 'Dinner'];
+  final List<String> _mealTypes = ['Breakfast', 'Lunch', 'Snack', 'Dinner'];
 
   @override
   void initState() {
@@ -125,11 +125,11 @@ class SegmentedButton<T> extends StatelessWidget {
   final ValueChanged<T> onSelectionChanged;
 
   const SegmentedButton({
-    Key? key,
+    super.key,
     required this.segments,
     required this.selected,
     required this.onSelectionChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

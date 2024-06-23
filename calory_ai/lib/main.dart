@@ -153,8 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: Icon(Icons.delete, color: Colors.red),
-                title: Text('Delete Entry'),
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text('Delete Entry'),
                 onTap: () {
                   Navigator.of(context).pop();
                   _deleteEntry(entryIndex);
