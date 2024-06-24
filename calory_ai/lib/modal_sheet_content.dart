@@ -47,15 +47,11 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
   }
 
   void _saveData() {
-    final int? calories = int.tryParse(_caloriesController.text);
-    final int? protein = int.tryParse(_proteinController.text);
+    final int calories = int.tryParse(_caloriesController.text) ?? 0;
+    final int protein = int.tryParse(_proteinController.text) ?? 0;
 
-    if (calories != null && protein != null) {
-      widget.onSave(calories, protein, _selectedType);
-      Navigator.of(context).pop();
-    } else {
-      // Handle validation error, e.g., show a message to the user
-    }
+    widget.onSave(calories, protein, _selectedType);
+    Navigator.of(context).pop();
   }
 
   @override

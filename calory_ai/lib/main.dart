@@ -215,7 +215,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     e.date.month == date.month &&
                     e.date.day == date.day)
                 .toList();
-            final formattedDate = DateFormat('EEEE, MMMM d, y').format(date);
 
             return SingleChildScrollView(
               child: Column(
@@ -292,12 +291,12 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'Add Entry',
             child: const Icon(Icons.add),
           ),
-          const SizedBox(height: 10),
+          /*const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () => _showActionSheetAi(context),
             tooltip: 'Add Entry with AI',
             child: const Icon(Icons.chat),
-          )
+          )*/
         ]));
   }
 }
@@ -370,10 +369,14 @@ class DailyStats extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            LinearProgressIndicator(
-              value: calorieProgress > 1 ? 1 : calorieProgress,
-              backgroundColor: Colors.grey[300],
-              color: calorieProgress > 1 ? Colors.red : Colors.orange,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: LinearProgressIndicator(
+                minHeight: 6,
+                value: calorieProgress > 1 ? 1 : calorieProgress,
+                backgroundColor: Colors.grey[300],
+                color: calorieProgress > 1 ? Colors.red : Colors.orange,
+              ),
             ),
             const SizedBox(height: 30),
             Row(
@@ -396,10 +399,14 @@ class DailyStats extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            LinearProgressIndicator(
-              value: proteinProgress > 1 ? 1 : proteinProgress,
-              backgroundColor: Colors.grey[300],
-              color: proteinProgress > 1 ? Colors.red : Colors.blue,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16.0),
+              child: LinearProgressIndicator(
+                minHeight: 6,
+                value: proteinProgress > 1 ? 1 : proteinProgress,
+                backgroundColor: Colors.grey[300],
+                color: proteinProgress > 1 ? Colors.red : Colors.blue,
+              ),
             ),
             const SizedBox(height: 10),
           ],
