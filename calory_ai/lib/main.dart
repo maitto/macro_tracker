@@ -6,6 +6,7 @@ import 'settings_page.dart';
 import 'data_entry.dart';
 import 'modal_sheet_content.dart';
 import 'modal_sheet_content_ai.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +18,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''), // English
+        Locale('fi', ''), // FI
+        // Add other supported locales here
+      ],
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -81,6 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
       final List<dynamic> dataJson = jsonDecode(dataString);
       setState(() {
         _entries = dataJson.map((json) => DataEntry.fromJson(json)).toList();
+        _entries.sort((a, b) =>
+            b.date.compareTo(a.date)); // Sort entries in descending order
         _uniqueDates = _entries
             .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
             .toSet()
@@ -99,6 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
       final newEntry = DataEntry(
           date: now, calories: calories, protein: protein, type: type);
       _entries.add(newEntry);
+      _entries.sort((a, b) =>
+          b.date.compareTo(a.date)); // Sort entries in descending order
 
       _uniqueDates = _entries
           .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
@@ -118,6 +133,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
     setState(() {
       _entries.removeAt(entryIndex);
+      _entries.sort((a, b) =>
+          b.date.compareTo(a.date)); // Sort entries in descending order
+
       _uniqueDates = _entries
           .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
           .toSet()
@@ -230,11 +248,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: entriesForDate.asMap().entries.map((entryMap) {
                         final entry = entryMap.value;
-                        final formattedTime =
-                            DateFormat('h:mm a').format(entry.date);
+                        Locale locale = Localizations.localeOf(context);
+                        DateFormat dateFormat =
+                            DateFormat.Hm(locale.toString());
+                        final formattedTime = dateFormat.format(entry.date);
                         final entryIndex = _entries.indexOf(entry);
 
                         return GestureDetector(
+                          behavior: HitTestBehavior.opaque,
                           onLongPress: () =>
                               _showDeleteMenu(context, entryIndex),
                           child: Column(
@@ -243,12 +264,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               Text(
                                 '$formattedTime - ${entry.type}',
                                 style: TextStyle(
-                                  fontSize: 22,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 10),
                               Row(
                                 children: [
                                   const Icon(Icons.local_fire_department,
@@ -256,11 +277,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                   const SizedBox(width: 10),
                                   Text(
                                     'Calories: ${entry.calories}',
-                                    style: const TextStyle(fontSize: 18),
+                                    style: const TextStyle(fontSize: 16),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 5),
                               Row(
                                 children: [
                                   const Icon(Icons.fitness_center,
@@ -268,7 +289,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   const SizedBox(width: 10),
                                   Text(
                                     'Protein: ${entry.protein}',
-                                    style: const TextStyle(fontSize: 18),
+                                    style: const TextStyle(fontSize: 16),
                                   ),
                                 ],
                               ),
@@ -325,8 +346,11 @@ class DailyStats extends StatelessWidget {
     int remainingCalories = calorieGoal - totalCalories;
     int remainingProtein = proteinGoal - totalProtein;
 
-    final formattedDate =
-        DateFormat('EEEE, MMMM d, y').format(entries.first.date);
+    Locale locale = Localizations.localeOf(context);
+    DateFormat dateFormat = DateFormat.MEd(locale.toString());
+    final formattedDate = dateFormat.format(entries.first.date);
+    /*final formattedDate =
+        DateFormat('EEEE, MMMM d, y').format(entries.first.date);*/
 
     final double calorieProgress =
         (calorieGoal > 0) ? totalCalories / calorieGoal : 0.0;

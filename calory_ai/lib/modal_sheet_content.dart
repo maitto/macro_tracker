@@ -50,8 +50,11 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
     final int calories = int.tryParse(_caloriesController.text) ?? 0;
     final int protein = int.tryParse(_proteinController.text) ?? 0;
 
-    widget.onSave(calories, protein, _selectedType);
-    Navigator.of(context).pop();
+    if (!(calories == 0 && protein == 0)) {
+      widget.onSave(calories, protein, _selectedType);
+      Navigator.of(context).pop();
+      HapticFeedback.lightImpact();
+    }
   }
 
   @override
