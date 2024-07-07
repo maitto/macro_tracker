@@ -334,7 +334,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 15),
             ],
           ),
         );
@@ -547,6 +547,15 @@ class WeeklyStatsPage extends StatelessWidget {
                   const SizedBox(height: 10),
                   Row(
                     children: [
+                      Text(
+                        'Number of days with data: ${weekStats['numberOfWeekDays']}',
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
                       const Icon(Icons.local_fire_department,
                           color: Colors.orange),
                       const SizedBox(width: 10),
@@ -594,6 +603,7 @@ class WeeklyStatsPage extends StatelessWidget {
           weeklyStats.add({
             'startDate': weekStartDate,
             'endDate': weekEndDate,
+            'numberOfWeekDays': weekDays.length,
             'averageCalories': (totalCalories / weekDays.length).round(),
             'averageProtein': (totalProtein / weekDays.length).round(),
           });
@@ -617,6 +627,7 @@ class WeeklyStatsPage extends StatelessWidget {
       weeklyStats.add({
         'startDate': weekStartDate,
         'endDate': weekEndDate,
+        'numberOfWeekDays': weekDays.length,
         'averageCalories': (totalCalories / weekDays.length).round(),
         'averageProtein': (totalProtein / weekDays.length).round(),
       });
