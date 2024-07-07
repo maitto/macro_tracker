@@ -168,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return ModalSheetContent(
+        return ModalSheetContentAi(
           onSave: (calories, protein, type) {
             _saveData(calories, protein, type);
           },
@@ -312,12 +312,12 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'Add Entry',
             child: const Icon(Icons.add),
           ),
-          /*const SizedBox(height: 10),
+          const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () => _showActionSheetAi(context),
             tooltip: 'Add Entry with AI',
             child: const Icon(Icons.chat),
-          )*/
+          )
         ]));
   }
 }
@@ -349,8 +349,6 @@ class DailyStats extends StatelessWidget {
     Locale locale = Localizations.localeOf(context);
     DateFormat dateFormat = DateFormat.MEd(locale.toString());
     final formattedDate = dateFormat.format(entries.first.date);
-    /*final formattedDate =
-        DateFormat('EEEE, MMMM d, y').format(entries.first.date);*/
 
     final double calorieProgress =
         (calorieGoal > 0) ? totalCalories / calorieGoal : 0.0;

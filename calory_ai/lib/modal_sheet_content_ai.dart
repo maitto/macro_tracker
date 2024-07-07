@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'cgpt_api_service.dart';
 
 class ModalSheetContentAi extends StatefulWidget {
   const ModalSheetContentAi(
@@ -15,35 +16,54 @@ class ModalSheetContentAi extends StatefulWidget {
   final String? initialType;
 
   @override
-  _ModalSheetContentState createState() => _ModalSheetContentState();
+  _ModalSheetContentStateAi createState() => _ModalSheetContentStateAi();
 }
 
-class _ModalSheetContentState extends State<ModalSheetContentAi> {
-  final FocusNode _caloriesFocusNode = FocusNode();
+class _ModalSheetContentStateAi extends State<ModalSheetContentAi> {
+  final CgptApiService cgptApiService = CgptApiService();
+  final FocusNode _inputFocusNode = FocusNode();
+  late TextEditingController _inputController;
   late TextEditingController _caloriesController;
   late TextEditingController _proteinController;
   String _selectedType = 'Breakfast';
   final List<String> _mealTypes = ['Breakfast', 'Lunch', 'Snack', 'Dinner'];
+  String _cgptResponse = '';
 
   @override
   void initState() {
     super.initState();
+    _inputController = TextEditingController(text: '');
     _caloriesController =
         TextEditingController(text: widget.initialCalories?.toString() ?? '');
     _proteinController =
         TextEditingController(text: widget.initialProtein?.toString() ?? '');
     _selectedType = widget.initialType ?? 'Breakfast';
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _caloriesFocusNode.requestFocus();
+      _inputFocusNode.requestFocus();
     });
   }
 
   @override
   void dispose() {
-    _caloriesFocusNode.dispose();
+    _inputFocusNode.dispose();
+    _inputController.dispose();
     _caloriesController.dispose();
     _proteinController.dispose();
     super.dispose();
+  }
+
+  void _search() async {
+    final message = _inputController.text;
+    if (message.isNotEmpty) {
+      final response = await cgptApiService.sendMessage(message);
+      setState(() {
+        _cgptResponse = response;
+      });
+
+      /*// Example: Extract the first sentence from the response
+      final firstSentence = _response.split('.').first + '.';
+      print('First sentence: $firstSentence');*/
+    }
   }
 
   void _saveData() {
@@ -73,7 +93,25 @@ class _ModalSheetContentState extends State<ModalSheetContentAi> {
               const Text('Enter Details', style: TextStyle(fontSize: 20)),
               const SizedBox(height: 10),
               TextFormField(
-                focusNode: _caloriesFocusNode,
+                focusNode: _inputFocusNode,
+                controller: _inputController,
+                decoration: const InputDecoration(
+                  labelText: 'What did you eat?',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _search,
+                child: const Text('Search'),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                _cgptResponse,
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 10),
+              TextFormField(
                 controller: _caloriesController,
                 decoration: const InputDecoration(
                   labelText: 'Calories',
