@@ -204,17 +204,27 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage(
+                    onGoalsChanged: _updateGoals,
+                  ),
+                ),
+              );
+            },
+          ),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(widget.title),
           actions: [
             IconButton(
-              icon: const Icon(Icons.settings),
+              icon: const Icon(Icons.bar_chart),
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => SettingsPage(
-                      onGoalsChanged: _updateGoals,
-                    ),
+                    builder: (context) => WeeklyStatsPage(entries: _entries),
                   ),
                 );
               },
@@ -290,26 +300,20 @@ class _MyHomePageState extends State<MyHomePage> {
         int totalProtein = entriesByMealType[mealType]!
             .fold(0, (sum, entry) => sum + entry.protein);
 
-        entryWidgets.add(Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Divider(height: 40, thickness: 1),
-            Text(
-              mealType,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-            const SizedBox(height: 5),
-          ],
-        ));
-
         entryWidgets.add(
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const Divider(height: 40, thickness: 1),
+              Text(
+                mealType,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+              const SizedBox(height: 5),
               Row(
                 children: [
                   const Icon(Icons.local_fire_department, color: Colors.orange),
@@ -347,6 +351,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const SizedBox(height: 10),
                 Text(
                   formattedTime,
                   style: TextStyle(
@@ -378,7 +383,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
               ],
             ),
           );
@@ -503,5 +508,125 @@ class DailyStats extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class WeeklyStatsPage extends StatelessWidget {
+  final List<DataEntry> entries;
+
+  const WeeklyStatsPage({required this.entries, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final weeklyStats = _calculateWeeklyStats(entries);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Weekly Stats'),
+      ),
+      body: ListView.builder(
+        itemCount: weeklyStats.length,
+        itemBuilder: (context, index) {
+          final weekStats = weeklyStats[index];
+
+          return Card(
+            margin: const EdgeInsets.all(16.0),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${DateFormat.yMMMd().format(weekStats['startDate'])} - ${DateFormat.yMMMd().format(weekStats['endDate'])}',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Icon(Icons.local_fire_department,
+                          color: Colors.orange),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Average Daily Calories: ${weekStats['averageCalories']}',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      const Icon(Icons.fitness_center, color: Colors.blue),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Average Daily Protein: ${weekStats['averageProtein']}',
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  List<Map<String, dynamic>> _calculateWeeklyStats(List<DataEntry> entries) {
+    List<Map<String, dynamic>> weeklyStats = [];
+    if (entries.isEmpty) return weeklyStats;
+
+    final sortedEntries = entries.toList()
+      ..sort((a, b) => a.date.compareTo(b.date));
+    DateTime weekStartDate = _findPreviousMonday(sortedEntries.first.date);
+    DateTime weekEndDate = weekStartDate.add(const Duration(days: 6));
+    int totalCalories = 0;
+    int totalProtein = 0;
+    int daysInWeek = 0;
+
+    for (var entry in sortedEntries) {
+      if (entry.date.isAfter(weekEndDate)) {
+        if (daysInWeek > 0) {
+          weeklyStats.add({
+            'startDate': weekStartDate,
+            'endDate': weekEndDate,
+            'averageCalories': (totalCalories / daysInWeek).round(),
+            'averageProtein': (totalProtein / daysInWeek).round(),
+          });
+        }
+
+        weekStartDate = _findPreviousMonday(entry.date);
+        weekEndDate = weekStartDate.add(const Duration(days: 6));
+        totalCalories = 0;
+        totalProtein = 0;
+        daysInWeek = 0;
+      }
+
+      totalCalories += entry.calories;
+      totalProtein += entry.protein;
+      daysInWeek += 1;
+    }
+
+    if (daysInWeek > 0) {
+      weeklyStats.add({
+        'startDate': weekStartDate,
+        'endDate': weekEndDate,
+        'averageCalories': (totalCalories / daysInWeek).round(),
+        'averageProtein': (totalProtein / daysInWeek).round(),
+      });
+    }
+
+    return weeklyStats;
+  }
+
+  DateTime _findPreviousMonday(DateTime date) {
+    while (date.weekday != DateTime.monday) {
+      date = date.subtract(const Duration(days: 1));
+    }
+    return date;
   }
 }
