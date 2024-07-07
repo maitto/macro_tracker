@@ -586,37 +586,39 @@ class WeeklyStatsPage extends StatelessWidget {
     DateTime weekEndDate = weekStartDate.add(const Duration(days: 6));
     int totalCalories = 0;
     int totalProtein = 0;
-    int daysInWeek = 0;
+    List<int> weekDays = [];
 
     for (var entry in sortedEntries) {
       if (entry.date.isAfter(weekEndDate)) {
-        if (daysInWeek > 0) {
+        if (weekDays.isNotEmpty) {
           weeklyStats.add({
             'startDate': weekStartDate,
             'endDate': weekEndDate,
-            'averageCalories': (totalCalories / daysInWeek).round(),
-            'averageProtein': (totalProtein / daysInWeek).round(),
+            'averageCalories': (totalCalories / weekDays.length).round(),
+            'averageProtein': (totalProtein / weekDays.length).round(),
           });
         }
 
-        weekStartDate = _findPreviousMonday(entry.date);
+        weekStartDate = weekEndDate.add(const Duration(days: 1));
         weekEndDate = weekStartDate.add(const Duration(days: 6));
         totalCalories = 0;
         totalProtein = 0;
-        daysInWeek = 0;
+        weekDays = [];
       }
 
       totalCalories += entry.calories;
       totalProtein += entry.protein;
-      daysInWeek += 1;
+      if (!(weekDays.contains(entry.date.weekday))) {
+        weekDays.add(entry.date.weekday);
+      }
     }
 
-    if (daysInWeek > 0) {
+    if (weekDays.isNotEmpty) {
       weeklyStats.add({
         'startDate': weekStartDate,
         'endDate': weekEndDate,
-        'averageCalories': (totalCalories / daysInWeek).round(),
-        'averageProtein': (totalProtein / daysInWeek).round(),
+        'averageCalories': (totalCalories / weekDays.length).round(),
+        'averageProtein': (totalProtein / weekDays.length).round(),
       });
     }
 
