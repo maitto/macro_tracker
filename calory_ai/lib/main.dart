@@ -246,58 +246,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: entriesForDate.asMap().entries.map((entryMap) {
-                        final entry = entryMap.value;
-                        Locale locale = Localizations.localeOf(context);
-                        DateFormat dateFormat =
-                            DateFormat.Hm(locale.toString());
-                        final formattedTime = dateFormat.format(entry.date);
-                        final entryIndex = _entries.indexOf(entry);
-
-                        return GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onLongPress: () =>
-                              _showDeleteMenu(context, entryIndex),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '$formattedTime - ${entry.type}',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  const Icon(Icons.local_fire_department,
-                                      color: Colors.orange),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    'Calories: ${entry.calories}',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 5),
-                              Row(
-                                children: [
-                                  const Icon(Icons.fitness_center,
-                                      color: Colors.blue),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    'Protein: ${entry.protein}',
-                                    style: const TextStyle(fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                              const Divider(height: 40, thickness: 1),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                      children:
+                          _buildEntriesByMealType(entriesForDate, context),
                     ),
                   ),
                 ],
@@ -312,13 +262,131 @@ class _MyHomePageState extends State<MyHomePage> {
             tooltip: 'Add Entry',
             child: const Icon(Icons.add),
           ),
+          /*
           const SizedBox(height: 10),
           FloatingActionButton(
             onPressed: () => _showActionSheetAi(context),
             tooltip: 'Add Entry with AI',
             child: const Icon(Icons.chat),
-          )
+          )*/
         ]));
+  }
+
+  List<Widget> _buildEntriesByMealType(
+      List<DataEntry> entries, BuildContext context) {
+    final mealTypes = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
+    final Map<String, List<DataEntry>> entriesByMealType = {};
+
+    for (var mealType in mealTypes) {
+      entriesByMealType[mealType] =
+          entries.where((e) => e.type == mealType).toList();
+    }
+
+    List<Widget> entryWidgets = [];
+    for (var mealType in mealTypes) {
+      if (entriesByMealType[mealType]!.isNotEmpty) {
+        int totalCalories = entriesByMealType[mealType]!
+            .fold(0, (sum, entry) => sum + entry.calories);
+        int totalProtein = entriesByMealType[mealType]!
+            .fold(0, (sum, entry) => sum + entry.protein);
+
+        entryWidgets.add(Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Divider(height: 40, thickness: 1),
+            Text(
+              mealType,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+            const SizedBox(height: 5),
+          ],
+        ));
+
+        entryWidgets.add(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.local_fire_department, color: Colors.orange),
+                  const SizedBox(width: 10),
+                  Text(
+                    '$mealType calories: $totalCalories',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Icon(Icons.fitness_center, color: Colors.blue),
+                  const SizedBox(width: 10),
+                  Text(
+                    '$mealType protein: $totalProtein',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 25),
+            ],
+          ),
+        );
+
+        entryWidgets.addAll(entriesByMealType[mealType]!.map((entry) {
+          Locale locale = Localizations.localeOf(context);
+          DateFormat dateFormat = DateFormat.Hm(locale.toString());
+          final formattedTime = dateFormat.format(entry.date);
+          final entryIndex = _entries.indexOf(entry);
+
+          return GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onLongPress: () => _showDeleteMenu(context, entryIndex),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  formattedTime,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    const Icon(Icons.local_fire_department,
+                        color: Colors.orange),
+                    const SizedBox(width: 10),
+                    Text(
+                      '${entry.calories}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 5),
+                Row(
+                  children: [
+                    const Icon(Icons.fitness_center, color: Colors.blue),
+                    const SizedBox(width: 10),
+                    Text(
+                      '${entry.protein}',
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+              ],
+            ),
+          );
+        }).toList());
+      }
+    }
+
+    return entryWidgets;
   }
 }
 
