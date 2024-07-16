@@ -514,7 +514,7 @@ class DailyStats extends StatelessWidget {
 class WeeklyStatsPage extends StatelessWidget {
   final List<DataEntry> entries;
 
-  const WeeklyStatsPage({required this.entries, Key? key}) : super(key: key);
+  const WeeklyStatsPage({required this.entries, super.key});
 
   @override
   Widget build(BuildContext context) {
