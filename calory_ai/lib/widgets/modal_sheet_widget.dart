@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../size_contants.dart';
 
 class ModalSheetContent extends StatefulWidget {
   const ModalSheetContent(
@@ -15,14 +16,14 @@ class ModalSheetContent extends StatefulWidget {
   final String? initialType;
 
   @override
-  _ModalSheetContentState createState() => _ModalSheetContentState();
+  ModalSheetContentState createState() => ModalSheetContentState();
 }
 
-class _ModalSheetContentState extends State<ModalSheetContent> {
+class ModalSheetContentState extends State<ModalSheetContent> {
   final FocusNode _caloriesFocusNode = FocusNode();
   late TextEditingController _caloriesController;
   late TextEditingController _proteinController;
-  String _selectedType = 'Breakfast';
+  String _selectedType = '';
   final List<String> _mealTypes = ['Breakfast', 'Lunch', 'Snack', 'Dinner'];
 
   @override
@@ -32,7 +33,7 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
         TextEditingController(text: widget.initialCalories?.toString() ?? '');
     _proteinController =
         TextEditingController(text: widget.initialProtein?.toString() ?? '');
-    _selectedType = widget.initialType ?? 'Breakfast';
+    _selectedType = widget.initialType ?? _mealTypes.first;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _caloriesFocusNode.requestFocus();
     });
@@ -65,12 +66,13 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
       ),
       child: IntrinsicHeight(
         child: Padding(
-          padding: const EdgeInsets.all(16.0), // Add padding to all sides
+          padding: const EdgeInsets.all(
+              AppSpacing.medium), // Add padding to all sides
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               const Text('Enter Details', style: TextStyle(fontSize: 20)),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSizedBox.medium),
               TextFormField(
                 focusNode: _caloriesFocusNode,
                 controller: _caloriesController,
@@ -83,7 +85,7 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
                   FilteringTextInputFormatter.digitsOnly,
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSizedBox.medium),
               TextFormField(
                 controller: _proteinController,
                 decoration: const InputDecoration(
@@ -95,7 +97,7 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
                   FilteringTextInputFormatter.digitsOnly,
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSizedBox.medium),
               SegmentedButton<String>(
                 segments: _mealTypes,
                 selected: _selectedType,
@@ -105,7 +107,7 @@ class _ModalSheetContentState extends State<ModalSheetContent> {
                   });
                 },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSizedBox.xLarge),
               ElevatedButton(
                 onPressed: _saveData,
                 child: const Text('Save'),
@@ -139,7 +141,8 @@ class SegmentedButton<T> extends StatelessWidget {
       },
       children: segments
           .map((T segment) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: AppSpacing.medium),
                 child: Text(segment.toString()),
               ))
           .toList(),

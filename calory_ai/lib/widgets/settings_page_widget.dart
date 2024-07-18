@@ -1,3 +1,4 @@
+import '../size_contants.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,10 +8,10 @@ class SettingsPage extends StatefulWidget {
   const SettingsPage({required this.onGoalsChanged, super.key});
 
   @override
-  _SettingsPageState createState() => _SettingsPageState();
+  SettingsPageState createState() => SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class SettingsPageState extends State<SettingsPage> {
   final TextEditingController _calorieGoalController = TextEditingController();
   final TextEditingController _proteinGoalController = TextEditingController();
 
@@ -55,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text('Settings'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSpacing.medium),
         child: Column(
           children: [
             TextField(
@@ -68,7 +69,7 @@ class _SettingsPageState extends State<SettingsPage> {
               decoration: const InputDecoration(labelText: 'Protein Goal'),
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSizedBox.xLarge),
             ElevatedButton(
               onPressed: () {
                 _saveGoals();

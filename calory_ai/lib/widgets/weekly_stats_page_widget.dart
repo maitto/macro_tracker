@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'data_entry.dart';
+import '../models/data_entry.dart';
 import 'package:intl/intl.dart';
+import '../size_contants.dart';
 
 class WeeklyStatsPage extends StatelessWidget {
   final List<DataEntry> entries;
@@ -20,9 +21,9 @@ class WeeklyStatsPage extends StatelessWidget {
           final weekStats = weeklyStats[index];
 
           return Card(
-            margin: const EdgeInsets.all(16.0),
+            margin: const EdgeInsets.all(AppSpacing.medium),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(AppSpacing.medium),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -34,35 +35,35 @@ class WeeklyStatsPage extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AppSizedBox.medium),
                   Row(
                     children: [
                       Text(
                         'Number of days with data: ${weekStats['numberOfWeekDays']}',
-                        style: const TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: AppFont.small),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AppSizedBox.medium),
                   Row(
                     children: [
                       const Icon(Icons.local_fire_department,
                           color: Colors.orange),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: AppSizedBox.medium),
                       Text(
                         'Average Daily Calories: ${weekStats['averageCalories']}',
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: AppFont.large),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: AppSizedBox.medium),
                   Row(
                     children: [
                       const Icon(Icons.fitness_center, color: Colors.blue),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: AppSizedBox.medium),
                       Text(
                         'Average Daily Protein: ${weekStats['averageProtein']}',
-                        style: const TextStyle(fontSize: 18),
+                        style: const TextStyle(fontSize: AppFont.large),
                       ),
                     ],
                   ),

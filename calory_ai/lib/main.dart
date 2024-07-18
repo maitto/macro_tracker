@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'home_page_widget.dart';
+import 'widgets/home_page_widget.dart';
 
 void main() {
   runApp(const MyApp());

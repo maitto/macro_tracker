@@ -1,6 +1,7 @@
+import '../size_contants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'cgpt_api_service.dart';
+import '../cgpt_api_service.dart';
 
 class ModalSheetContentAi extends StatefulWidget {
   const ModalSheetContentAi(
@@ -25,8 +26,8 @@ class _ModalSheetContentStateAi extends State<ModalSheetContentAi> {
   late TextEditingController _inputController;
   late TextEditingController _caloriesController;
   late TextEditingController _proteinController;
-  String _selectedType = 'Breakfast';
   final List<String> _mealTypes = ['Breakfast', 'Lunch', 'Snack', 'Dinner'];
+  String _selectedType = '';
   String _cgptResponse = '';
 
   @override
@@ -37,7 +38,7 @@ class _ModalSheetContentStateAi extends State<ModalSheetContentAi> {
         TextEditingController(text: widget.initialCalories?.toString() ?? '');
     _proteinController =
         TextEditingController(text: widget.initialProtein?.toString() ?? '');
-    _selectedType = widget.initialType ?? 'Breakfast';
+    _selectedType = widget.initialType ?? _mealTypes.first;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _inputFocusNode.requestFocus();
     });
@@ -86,12 +87,13 @@ class _ModalSheetContentStateAi extends State<ModalSheetContentAi> {
       ),
       child: IntrinsicHeight(
         child: Padding(
-          padding: const EdgeInsets.all(16.0), // Add padding to all sides
+          padding: const EdgeInsets.all(
+              AppSpacing.medium), // Add padding to all sides
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               const Text('Enter Details', style: TextStyle(fontSize: 20)),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSizedBox.medium),
               TextFormField(
                 focusNode: _inputFocusNode,
                 controller: _inputController,
@@ -100,17 +102,17 @@ class _ModalSheetContentStateAi extends State<ModalSheetContentAi> {
                   border: OutlineInputBorder(),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSizedBox.xLarge),
               ElevatedButton(
                 onPressed: _search,
                 child: const Text('Search'),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSizedBox.medium),
               Text(
                 _cgptResponse,
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: AppFont.medium),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSizedBox.medium),
               TextFormField(
                 controller: _caloriesController,
                 decoration: const InputDecoration(
@@ -122,7 +124,7 @@ class _ModalSheetContentStateAi extends State<ModalSheetContentAi> {
                   FilteringTextInputFormatter.digitsOnly,
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSizedBox.medium),
               TextFormField(
                 controller: _proteinController,
                 decoration: const InputDecoration(
@@ -134,7 +136,7 @@ class _ModalSheetContentStateAi extends State<ModalSheetContentAi> {
                   FilteringTextInputFormatter.digitsOnly,
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSizedBox.medium),
               SegmentedButton<String>(
                 segments: _mealTypes,
                 selected: _selectedType,
@@ -144,7 +146,7 @@ class _ModalSheetContentStateAi extends State<ModalSheetContentAi> {
                   });
                 },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSizedBox.xLarge),
               ElevatedButton(
                 onPressed: _saveData,
                 child: const Text('Save'),
@@ -178,7 +180,8 @@ class SegmentedButton<T> extends StatelessWidget {
       },
       children: segments
           .map((T segment) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: AppSpacing.medium),
                 child: Text(segment.toString()),
               ))
           .toList(),

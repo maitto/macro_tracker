@@ -1,5 +1,6 @@
+import '../size_contants.dart';
 import 'package:flutter/material.dart';
-import 'data_entry.dart';
+import '../models/data_entry.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -216,7 +217,7 @@ class _HomePageState extends State<HomePage> {
                       calorieGoal: _calorieGoal,
                       proteinGoal: _proteinGoal),
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(AppSpacing.medium),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children:
@@ -236,7 +237,7 @@ class _HomePageState extends State<HomePage> {
             child: const Icon(Icons.add),
           ),
           /*
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSizedBox.medium),
           FloatingActionButton(
             onPressed: () => _showActionSheetAi(context),
             tooltip: 'Add Entry with AI',
@@ -276,28 +277,28 @@ class _HomePageState extends State<HomePage> {
                   color: Theme.of(context).colorScheme.primary,
                 ),
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: AppSizedBox.small),
               Row(
                 children: [
                   const Icon(Icons.local_fire_department, color: Colors.orange),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSizedBox.medium),
                   Text(
                     '$mealType calories: $totalCalories',
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: AppFont.medium),
                   ),
                 ],
               ),
               Row(
                 children: [
                   const Icon(Icons.fitness_center, color: Colors.blue),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSizedBox.medium),
                   Text(
                     '$mealType protein: $totalProtein',
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: AppFont.medium),
                   ),
                 ],
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: AppSizedBox.large),
             ],
           ),
         );
@@ -314,7 +315,7 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSizedBox.medium),
                 Text(
                   formattedTime,
                   style: TextStyle(
@@ -323,30 +324,30 @@ class _HomePageState extends State<HomePage> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: AppSizedBox.small),
                 Row(
                   children: [
                     const Icon(Icons.local_fire_department,
                         color: Colors.orange),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: AppSizedBox.medium),
                     Text(
                       '${entry.calories}',
-                      style: const TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: AppFont.medium),
                     ),
                   ],
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: AppSizedBox.small),
                 Row(
                   children: [
                     const Icon(Icons.fitness_center, color: Colors.blue),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: AppSizedBox.medium),
                     Text(
                       '${entry.protein}',
-                      style: const TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: AppFont.medium),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSizedBox.medium),
               ],
             ),
           );
