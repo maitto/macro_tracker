@@ -25,9 +25,9 @@ class SettingsPageState extends State<SettingsPage> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _calorieGoalController.text =
-          (prefs.getInt('calorieGoal') ?? 2800).toString();
+          (prefs.getInt('calorieGoal') ?? 0).toString();
       _proteinGoalController.text =
-          (prefs.getInt('proteinGoal') ?? 180).toString();
+          (prefs.getInt('proteinGoal') ?? 0).toString();
     });
   }
 

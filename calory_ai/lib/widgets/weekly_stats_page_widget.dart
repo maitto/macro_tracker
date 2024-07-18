@@ -30,7 +30,7 @@ class WeeklyStatsPage extends StatelessWidget {
                   Text(
                     '${DateFormat.yMMMd().format(weekStats['startDate'])} - ${DateFormat.yMMMd().format(weekStats['endDate'])}',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: AppFont.xLarge,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.primary,
                     ),

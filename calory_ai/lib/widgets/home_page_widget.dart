@@ -22,8 +22,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<DataEntry> _entries = [];
   List<DateTime> _uniqueDates = [];
-  int _calorieGoal = 2800;
-  int _proteinGoal = 180;
+  int _calorieGoal = 0;
+  int _proteinGoal = 0;
   late PageController _pageController;
 
   @override
@@ -37,8 +37,8 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadGoals() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _calorieGoal = prefs.getInt('calorieGoal') ?? 2800;
-      _proteinGoal = prefs.getInt('proteinGoal') ?? 180;
+      _calorieGoal = prefs.getInt('calorieGoal') ?? 0;
+      _proteinGoal = prefs.getInt('proteinGoal') ?? 0;
     });
   }
 
@@ -272,7 +272,7 @@ class _HomePageState extends State<HomePage> {
               Text(
                 mealType,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: AppFont.large,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary,
                 ),
@@ -319,7 +319,7 @@ class _HomePageState extends State<HomePage> {
                 Text(
                   formattedTime,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: AppFont.medium,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.primary,
                   ),

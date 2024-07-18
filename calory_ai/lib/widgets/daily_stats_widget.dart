@@ -27,14 +27,14 @@ class DailyStats extends StatelessWidget {
     int remainingCalories = calorieGoal - totalCalories;
     int remainingProtein = proteinGoal - totalProtein;
 
-    Locale locale = Localizations.localeOf(context);
-    DateFormat dateFormat = DateFormat.MEd(locale.toString());
-    final formattedDate = dateFormat.format(entries.first.date);
-
     final double calorieProgress =
         (calorieGoal > 0) ? totalCalories / calorieGoal : 0.0;
     final double proteinProgress =
         (proteinGoal > 0) ? totalProtein / proteinGoal : 0.0;
+
+    Locale locale = Localizations.localeOf(context);
+    DateFormat dateFormat = DateFormat.MEd(locale.toString());
+    final formattedDate = dateFormat.format(entries.first.date);
 
     return Card(
       margin: const EdgeInsets.all(AppSpacing.medium),
@@ -46,7 +46,7 @@ class DailyStats extends StatelessWidget {
             Text(
               'Stats for $formattedDate',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: AppFont.xLarge,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.primary,
               ),

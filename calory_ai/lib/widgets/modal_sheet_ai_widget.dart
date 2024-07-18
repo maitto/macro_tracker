@@ -92,7 +92,7 @@ class _ModalSheetContentStateAi extends State<ModalSheetContentAi> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Text('Enter Details', style: TextStyle(fontSize: 20)),
+              const Text('Enter Details', style: TextStyle(fontSize: AppFont.xLarge)),
               const SizedBox(height: AppSizedBox.medium),
               TextFormField(
                 focusNode: _inputFocusNode,
