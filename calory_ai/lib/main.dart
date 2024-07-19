@@ -1,4 +1,4 @@
-import 'package:calory_ai/providers/home_page_view_model.dart';
+import 'package:calory_ai/view_models/home_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
