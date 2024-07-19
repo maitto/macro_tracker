@@ -1,5 +1,7 @@
+import 'package:calory_ai/providers/home_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
 import 'widgets/home_page_widget.dart';
 
 void main() {
@@ -11,7 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => HomePageViewModel()..initialize()),
+      ],
+      child: MaterialApp(
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -36,6 +42,7 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.system, // Use system theme mode (light/dark)
       home: const HomePage(title: 'Calory AI'),
+      ),
     );
   }
 }

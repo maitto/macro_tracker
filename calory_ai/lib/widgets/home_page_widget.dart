@@ -1,116 +1,105 @@
+import 'package:calory_ai/models/meal_type.dart';
+
+import '../providers/home_page_view_model.dart';
 import '../size_contants.dart';
 import 'package:flutter/material.dart';
 import '../models/data_entry.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'settings_page_widget.dart';
 import 'weekly_stats_page_widget.dart';
-import 'modal_sheet_widget.dart';
-import 'modal_sheet_ai_widget.dart';
+import 'data_entry_sheet_widget.dart';
 import 'daily_stats_widget.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.settings),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => SettingsPage(
+                  onGoalsChanged: (calorieGoal, proteinGoal) {
+                    context
+                        .read<HomePageViewModel>()
+                        .updateGoals(calorieGoal, proteinGoal);
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.bar_chart),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Consumer<HomePageViewModel>(
+                    builder: (context, viewModel, child) {
+                      return WeeklyStatsPage(entries: viewModel.entries);
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Consumer<HomePageViewModel>(
+        builder: (context, viewModel, child) {
+          return PageView.builder(
+            controller: viewModel.pageController,
+            itemCount: viewModel.uniqueDates.length,
+            reverse: true,
+            itemBuilder: (context, index) {
+              final date = viewModel.uniqueDates[index];
+              final entriesForDate = viewModel.entriesForDate(date);
 
-class _HomePageState extends State<HomePage> {
-  List<DataEntry> _entries = [];
-  List<DateTime> _uniqueDates = [];
-  int _calorieGoal = 0;
-  int _proteinGoal = 0;
-  late PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(initialPage: 0);
-    _loadData();
-    _loadGoals();
-  }
-
-  Future<void> _loadGoals() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _calorieGoal = prefs.getInt('calorieGoal') ?? 0;
-      _proteinGoal = prefs.getInt('proteinGoal') ?? 0;
-    });
-  }
-
-  void _updateGoals(int calorieGoal, int proteinGoal) {
-    setState(() {
-      _calorieGoal = calorieGoal;
-      _proteinGoal = proteinGoal;
-    });
-  }
-
-  Future<void> _loadData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? dataString = prefs.getString('dataEntries');
-    if (dataString != null) {
-      final List<dynamic> dataJson = jsonDecode(dataString);
-      setState(() {
-        _entries = dataJson.map((json) => DataEntry.fromJson(json)).toList();
-        _entries.sort((a, b) =>
-            b.date.compareTo(a.date)); // Sort entries in descending order
-        _uniqueDates = _entries
-            .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
-            .toSet()
-            .toList();
-        _uniqueDates
-            .sort((a, b) => b.compareTo(a)); // Sort dates in descending order
-      });
-    }
-  }
-
-  Future<void> _saveData(int calories, int protein, String type) async {
-    final prefs = await SharedPreferences.getInstance();
-    final now = DateTime.now();
-
-    setState(() {
-      final newEntry = DataEntry(
-          date: now, calories: calories, protein: protein, type: type);
-      _entries.add(newEntry);
-      _entries.sort((a, b) =>
-          b.date.compareTo(a.date)); // Sort entries in descending order
-
-      _uniqueDates = _entries
-          .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
-          .toSet()
-          .toList();
-      _uniqueDates
-          .sort((a, b) => b.compareTo(a)); // Sort dates in descending order
-    });
-
-    final String dataString =
-        jsonEncode(_entries.map((entry) => entry.toJson()).toList());
-    await prefs.setString('dataEntries', dataString);
-  }
-
-  Future<void> _deleteEntry(int entryIndex) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    setState(() {
-      _entries.removeAt(entryIndex);
-      _entries.sort((a, b) =>
-          b.date.compareTo(a.date)); // Sort entries in descending order
-
-      _uniqueDates = _entries
-          .map((e) => DateTime(e.date.year, e.date.month, e.date.day))
-          .toSet()
-          .toList();
-      _uniqueDates
-          .sort((a, b) => b.compareTo(a)); // Sort dates in descending order
-    });
-
-    final String dataString =
-        jsonEncode(_entries.map((entry) => entry.toJson()).toList());
-    await prefs.setString('dataEntries', dataString);
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DailyStats(
+                      entries: entriesForDate,
+                      calorieGoal: viewModel.calorieGoal,
+                      proteinGoal: viewModel.proteinGoal,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(AppSpacing.medium),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: _buildEntriesByMealType(
+                            entriesForDate, context, viewModel),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () => _showActionSheet(context),
+            tooltip: 'Add Entry',
+            child: const Icon(Icons.add),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _showActionSheet(BuildContext context) async {
@@ -118,146 +107,26 @@ class _HomePageState extends State<HomePage> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return ModalSheetContent(
+        return DataEntrySheetContent(
           onSave: (calories, protein, type) {
-            _saveData(calories, protein, type);
+            context.read<HomePageViewModel>().saveEntry(calories, protein, type);
           },
         );
       },
     );
   }
 
-  Future<void> _showActionSheetAi(BuildContext context) async {
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        return ModalSheetContentAi(
-          onSave: (calories, protein, type) {
-            _saveData(calories, protein, type);
-          },
-        );
-      },
-    );
-  }
-
-  void _showDeleteMenu(BuildContext context, int entryIndex) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text('Delete Entry'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _deleteEntry(entryIndex);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => SettingsPage(
-                    onGoalsChanged: _updateGoals,
-                  ),
-                ),
-              );
-            },
-          ),
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.bar_chart),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => WeeklyStatsPage(entries: _entries),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-        body: PageView.builder(
-          controller: _pageController,
-          itemCount: _uniqueDates.length,
-          reverse: true,
-          itemBuilder: (context, index) {
-            final date = _uniqueDates[index];
-            final entriesForDate = _entries
-                .where((e) =>
-                    e.date.year == date.year &&
-                    e.date.month == date.month &&
-                    e.date.day == date.day)
-                .toList();
-
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DailyStats(
-                      entries: entriesForDate,
-                      calorieGoal: _calorieGoal,
-                      proteinGoal: _proteinGoal),
-                  Padding(
-                    padding: const EdgeInsets.all(AppSpacing.medium),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          _buildEntriesByMealType(entriesForDate, context),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-        floatingActionButton:
-            Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-          FloatingActionButton(
-            onPressed: () => _showActionSheet(context),
-            tooltip: 'Add Entry',
-            child: const Icon(Icons.add),
-          ),
-          /*
-          const SizedBox(height: AppSizedBox.medium),
-          FloatingActionButton(
-            onPressed: () => _showActionSheetAi(context),
-            tooltip: 'Add Entry with AI',
-            child: const Icon(Icons.chat),
-          )*/
-        ]));
-  }
-
-  List<Widget> _buildEntriesByMealType(
-      List<DataEntry> entries, BuildContext context) {
-    final mealTypes = ['Breakfast', 'Lunch', 'Dinner', 'Snack'];
+  List<Widget> _buildEntriesByMealType(List<DataEntry> entries,
+      BuildContext context, HomePageViewModel viewModel) {
     final Map<String, List<DataEntry>> entriesByMealType = {};
 
-    for (var mealType in mealTypes) {
+    for (var mealType in MealType.types) {
       entriesByMealType[mealType] =
           entries.where((e) => e.type == mealType).toList();
     }
 
     List<Widget> entryWidgets = [];
-    for (var mealType in mealTypes) {
+    for (var mealType in MealType.types) {
       if (entriesByMealType[mealType]!.isNotEmpty) {
         int totalCalories = entriesByMealType[mealType]!
             .fold(0, (sum, entry) => sum + entry.calories);
@@ -307,11 +176,11 @@ class _HomePageState extends State<HomePage> {
           Locale locale = Localizations.localeOf(context);
           DateFormat dateFormat = DateFormat.Hm(locale.toString());
           final formattedTime = dateFormat.format(entry.date);
-          final entryIndex = _entries.indexOf(entry);
+          final entryIndex = viewModel.entries.indexOf(entry);
 
           return GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onLongPress: () => _showDeleteMenu(context, entryIndex),
+            onLongPress: () => _showDeleteMenu(context, entryIndex, viewModel),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -356,5 +225,29 @@ class _HomePageState extends State<HomePage> {
     }
 
     return entryWidgets;
+  }
+
+  void _showDeleteMenu(
+      BuildContext context, int entryIndex, HomePageViewModel viewModel) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.delete, color: Colors.red),
+                title: const Text('Delete Entry'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  viewModel.deleteEntry(entryIndex);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

@@ -1,9 +1,10 @@
+import 'package:calory_ai/models/meal_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../size_contants.dart';
 
-class ModalSheetContent extends StatefulWidget {
-  const ModalSheetContent(
+class DataEntrySheetContent extends StatefulWidget {
+  const DataEntrySheetContent(
       {super.key,
       required this.onSave,
       this.initialCalories,
@@ -16,15 +17,14 @@ class ModalSheetContent extends StatefulWidget {
   final String? initialType;
 
   @override
-  ModalSheetContentState createState() => ModalSheetContentState();
+  DataEntrySheetState createState() => DataEntrySheetState();
 }
 
-class ModalSheetContentState extends State<ModalSheetContent> {
+class DataEntrySheetState extends State<DataEntrySheetContent> {
   final FocusNode _caloriesFocusNode = FocusNode();
   late TextEditingController _caloriesController;
   late TextEditingController _proteinController;
   String _selectedType = '';
-  final List<String> _mealTypes = ['Breakfast', 'Lunch', 'Snack', 'Dinner'];
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class ModalSheetContentState extends State<ModalSheetContent> {
         TextEditingController(text: widget.initialCalories?.toString() ?? '');
     _proteinController =
         TextEditingController(text: widget.initialProtein?.toString() ?? '');
-    _selectedType = widget.initialType ?? _mealTypes.first;
+    _selectedType = widget.initialType ?? MealType.types.first;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _caloriesFocusNode.requestFocus();
     });
@@ -71,7 +71,8 @@ class ModalSheetContentState extends State<ModalSheetContent> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Text('Enter Details', style: TextStyle(fontSize: AppFont.xLarge)),
+              const Text('Enter Details',
+                  style: TextStyle(fontSize: AppFont.xLarge)),
               const SizedBox(height: AppSizedBox.medium),
               TextFormField(
                 focusNode: _caloriesFocusNode,
@@ -99,7 +100,7 @@ class ModalSheetContentState extends State<ModalSheetContent> {
               ),
               const SizedBox(height: AppSizedBox.medium),
               SegmentedButton<String>(
-                segments: _mealTypes,
+                segments: MealType.types,
                 selected: _selectedType,
                 onSelectionChanged: (String newValue) {
                   setState(() {
