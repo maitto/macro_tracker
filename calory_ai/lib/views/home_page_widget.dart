@@ -26,6 +26,8 @@ class HomePage extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => SettingsPage(
+                  calorieGoal: context.read<HomePageViewModel>().calorieGoal,
+                  proteinGoal: context.read<HomePageViewModel>().proteinGoal,
                   onGoalsChanged: (calorieGoal, proteinGoal) {
                     context
                         .read<HomePageViewModel>()

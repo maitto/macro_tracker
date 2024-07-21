@@ -29,7 +29,7 @@ class WeeklyStatsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${DateFormat.yMMMd().format(weekStats['startDate'])} - ${DateFormat.yMMMd().format(weekStats['endDate'])}',
+                    '${DateFormat.yMMMd().format(weekStats.startDate)} - ${DateFormat.yMMMd().format(weekStats.endDate)}',
                     style: TextStyle(
                       fontSize: AppFont.xLarge,
                       fontWeight: FontWeight.bold,
@@ -40,7 +40,7 @@ class WeeklyStatsPage extends StatelessWidget {
                   Row(
                     children: [
                       Text(
-                        'Number of days with data: ${weekStats['numberOfWeekDays']}',
+                        'Number of days with data: ${weekStats.numberOfWeekDaysWithData}',
                         style: const TextStyle(fontSize: AppFont.small),
                       ),
                     ],
@@ -52,7 +52,7 @@ class WeeklyStatsPage extends StatelessWidget {
                           color: Colors.orange),
                       const SizedBox(width: AppSizedBox.medium),
                       Text(
-                        'Average Daily Calories: ${weekStats['averageCalories']}',
+                        'Average Daily Calories: ${weekStats.averageCalories}',
                         style: const TextStyle(fontSize: AppFont.large),
                       ),
                     ],
@@ -63,7 +63,7 @@ class WeeklyStatsPage extends StatelessWidget {
                       const Icon(Icons.fitness_center, color: Colors.blue),
                       const SizedBox(width: AppSizedBox.medium),
                       Text(
-                        'Average Daily Protein: ${weekStats['averageProtein']}',
+                        'Average Daily Protein: ${weekStats.averageProtein}',
                         style: const TextStyle(fontSize: AppFont.large),
                       ),
                     ],

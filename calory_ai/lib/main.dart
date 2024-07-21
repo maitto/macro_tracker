@@ -2,7 +2,7 @@ import 'package:calory_ai/view_models/home_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'widgets/home_page_widget.dart';
+import 'views/home_page_widget.dart';
 
 void main() {
   runApp(const MyApp());

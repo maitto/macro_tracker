@@ -1,11 +1,16 @@
 import '../size_contants.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
+  final int calorieGoal;
+  final int proteinGoal;
   final Function(int, int) onGoalsChanged;
 
-  const SettingsPage({required this.onGoalsChanged, super.key});
+  const SettingsPage(
+      {required this.calorieGoal,
+      required this.proteinGoal,
+      required this.onGoalsChanged,
+      super.key});
 
   @override
   SettingsPageState createState() => SettingsPageState();
@@ -18,28 +23,15 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _loadGoals();
+    _calorieGoalController.text = widget.calorieGoal.toString();
+    _proteinGoalController.text = widget.proteinGoal.toString();
   }
 
-  Future<void> _loadGoals() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _calorieGoalController.text =
-          (prefs.getInt('calorieGoal') ?? 0).toString();
-      _proteinGoalController.text =
-          (prefs.getInt('proteinGoal') ?? 0).toString();
-    });
-  }
-
-  Future<void> _saveGoals() async {
-    final prefs = await SharedPreferences.getInstance();
+  void _saveGoalsTapped() {
     final int calorieGoal = int.parse(_calorieGoalController.text);
     final int proteinGoal = int.parse(_proteinGoalController.text);
-
-    await prefs.setInt('calorieGoal', calorieGoal);
-    await prefs.setInt('proteinGoal', proteinGoal);
-
     widget.onGoalsChanged(calorieGoal, proteinGoal);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -72,8 +64,7 @@ class SettingsPageState extends State<SettingsPage> {
             const SizedBox(height: AppSizedBox.xLarge),
             ElevatedButton(
               onPressed: () {
-                _saveGoals();
-                Navigator.of(context).pop();
+                _saveGoalsTapped();
               },
               child: const Text('Save'),
             ),
