@@ -1,5 +1,4 @@
 import 'package:calory_ai/models/weekly_stat.dart';
-
 import '../models/data_entry.dart';
 
 class WeeklyStatsViewModel {
@@ -23,7 +22,7 @@ class WeeklyStatsViewModel {
       }
       entriesForWeek.add(entry);
     }
-    
+
     weeklyStats.add(
             _getWeeklyStatFromEntries(startOfWeek, endOfWeek, entriesForWeek));
 
