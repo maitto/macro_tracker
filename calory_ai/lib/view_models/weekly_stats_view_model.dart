@@ -9,20 +9,23 @@ class WeeklyStatsViewModel {
 
     final sortedEntries = entries.toList()
       ..sort((a, b) => a.date.compareTo(b.date));
-    DateTime weekStartDate = _findPreviousMonday(sortedEntries.first.date);
-    DateTime weekEndDate = weekStartDate.add(const Duration(days: 6));
+    DateTime startOfWeek = _getStartOfWeek(sortedEntries.first.date);
+    DateTime endOfWeek = _getEndOfWeek(sortedEntries.first.date);
 
     List<DataEntry> entriesForWeek = [];
     for (var entry in sortedEntries) {
-      if (entry.date.isAfter(weekEndDate)) {
-        weeklyStats.add(_getWeeklyStatFromEntries(
-            weekStartDate, weekEndDate, entriesForWeek));
+      if (entry.date.isAfter(endOfWeek)) {
+        weeklyStats.add(
+            _getWeeklyStatFromEntries(startOfWeek, endOfWeek, entriesForWeek));
         entriesForWeek = [];
-        weekStartDate = weekEndDate.add(const Duration(days: 1));
-        weekEndDate = weekStartDate.add(const Duration(days: 6));
+        startOfWeek = _getStartOfWeek(entry.date);
+        endOfWeek = _getEndOfWeek(entry.date);
       }
       entriesForWeek.add(entry);
     }
+    
+    weeklyStats.add(
+            _getWeeklyStatFromEntries(startOfWeek, endOfWeek, entriesForWeek));
 
     return weeklyStats;
   }
@@ -51,10 +54,17 @@ class WeeklyStatsViewModel {
             (totalProtein / numberOfWeekDaysWithData.length).round());
   }
 
-  DateTime _findPreviousMonday(DateTime date) {
+  DateTime _getStartOfWeek(DateTime date) {
     while (date.weekday != DateTime.monday) {
       date = date.subtract(const Duration(days: 1));
     }
-    return date;
+    return DateTime(date.year, date.month, date.day);
+  }
+
+  DateTime _getEndOfWeek(DateTime date) {
+    while (date.weekday != DateTime.sunday) {
+      date = date.add(const Duration(days: 1));
+    }
+    return DateTime(date.year, date.month, date.day, 23, 59, 59, 999);
   }
 }
