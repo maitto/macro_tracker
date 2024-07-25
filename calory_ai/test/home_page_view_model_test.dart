@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'dart:convert';
-import 'home_page_view_model_test.mocks.dart';
+import 'mock_shared_preferences.dart';
 
 @GenerateMocks([SharedPreferences])
 void main() {
