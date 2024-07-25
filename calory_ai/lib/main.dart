@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => HomePageViewModel()..initialize()),
+        ChangeNotifierProvider(create: (_) => HomePageViewModel()..init()),
       ],
       child: MaterialApp(
       localizationsDelegates: const [
