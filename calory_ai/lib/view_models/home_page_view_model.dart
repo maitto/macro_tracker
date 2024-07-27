@@ -34,9 +34,12 @@ class HomePageViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateGoals(int calorieGoal, int proteinGoal) {
+  void updateGoals(int calorieGoal, int proteinGoal) async {
     _calorieGoal = calorieGoal;
     _proteinGoal = proteinGoal;
+    final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
+    prefs.setInt('calorieGoal', calorieGoal);
+    prefs.setInt('proteinGoal', proteinGoal);
     notifyListeners();
   }
 

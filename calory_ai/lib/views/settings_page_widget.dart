@@ -1,4 +1,4 @@
-import '../size_contants.dart';
+import '../utils/size_contants.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {

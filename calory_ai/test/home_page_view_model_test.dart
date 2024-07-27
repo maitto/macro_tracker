@@ -37,6 +37,20 @@ void main() {
       expect(viewModel.proteinGoal, 150);
     });
 
+    test('stores new goals to shared preferences', () async {
+      when(mockPrefs.getInt('calorieGoal')).thenReturn(2000);
+      when(mockPrefs.getInt('proteinGoal')).thenReturn(150);
+      when(mockPrefs.getString('dataEntries')).thenReturn(null);
+      when(mockPrefs.setInt(any, any)).thenAnswer((_) async => true);
+
+      viewModel.init();
+
+      viewModel.updateGoals(2500, 180);
+
+      verify(mockPrefs.setInt('calorieGoal', 2500)).called(1);
+      verify(mockPrefs.setInt('proteinGoal', 180)).called(1);
+    });
+
     test('updates goals and notifies listeners', () async {
       bool isNotified = false;
       viewModel.addListener(() {

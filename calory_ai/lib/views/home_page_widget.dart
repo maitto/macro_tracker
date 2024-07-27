@@ -1,7 +1,7 @@
 import 'package:calory_ai/models/meal_type.dart';
 
 import '../view_models/home_page_view_model.dart';
-import '../size_contants.dart';
+import '../utils/size_contants.dart';
 import 'package:flutter/material.dart';
 import '../models/data_entry.dart';
 import 'package:intl/intl.dart';

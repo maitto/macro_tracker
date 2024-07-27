@@ -1,7 +1,7 @@
 import 'package:calory_ai/models/meal_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../size_contants.dart';
+import '../utils/size_contants.dart';
 
 class DataEntrySheetContent extends StatefulWidget {
   const DataEntrySheetContent(

@@ -2,7 +2,7 @@ import 'package:calory_ai/view_models/weekly_stats_view_model.dart';
 import 'package:flutter/material.dart';
 import '../models/data_entry.dart';
 import 'package:intl/intl.dart';
-import '../size_contants.dart';
+import '../utils/size_contants.dart';
 
 class WeeklyStatsPage extends StatelessWidget {
   final List<DataEntry> entries;
