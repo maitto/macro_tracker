@@ -27,9 +27,12 @@ void main() {
     });
 
     test('loads goals from shared preferences', () async {
-      when(mockPrefs.getInt('calorieGoal')).thenReturn(2000);
-      when(mockPrefs.getInt('proteinGoal')).thenReturn(150);
-      when(mockPrefs.getString('dataEntries')).thenReturn(null);
+      when(mockPrefs.getInt(SharedPreferencesKeys.calorieGoal.name))
+          .thenReturn(2000);
+      when(mockPrefs.getInt(SharedPreferencesKeys.proteinGoal.name))
+          .thenReturn(150);
+      when(mockPrefs.getString(SharedPreferencesKeys.dataEntries.name))
+          .thenReturn(null);
 
       viewModel.init();
 
@@ -38,17 +41,22 @@ void main() {
     });
 
     test('stores new goals to shared preferences', () async {
-      when(mockPrefs.getInt('calorieGoal')).thenReturn(2000);
-      when(mockPrefs.getInt('proteinGoal')).thenReturn(150);
-      when(mockPrefs.getString('dataEntries')).thenReturn(null);
+      when(mockPrefs.getInt(SharedPreferencesKeys.calorieGoal.name))
+          .thenReturn(2000);
+      when(mockPrefs.getInt(SharedPreferencesKeys.proteinGoal.name))
+          .thenReturn(150);
+      when(mockPrefs.getString(SharedPreferencesKeys.dataEntries.name))
+          .thenReturn(null);
       when(mockPrefs.setInt(any, any)).thenAnswer((_) async => true);
 
       viewModel.init();
 
       viewModel.updateGoals(2500, 180);
 
-      verify(mockPrefs.setInt('calorieGoal', 2500)).called(1);
-      verify(mockPrefs.setInt('proteinGoal', 180)).called(1);
+      verify(mockPrefs.setInt(SharedPreferencesKeys.calorieGoal.name, 2500))
+          .called(1);
+      verify(mockPrefs.setInt(SharedPreferencesKeys.proteinGoal.name, 180))
+          .called(1);
     });
 
     test('updates goals and notifies listeners', () async {
@@ -57,6 +65,12 @@ void main() {
         isNotified = true;
       });
 
+      when(mockPrefs.getInt(any)).thenReturn(null);
+      when(mockPrefs.getString(any)).thenReturn(null);
+      when(mockPrefs.setInt(any, any)).thenAnswer((_) async => true);
+      when(mockPrefs.setString(any, any)).thenAnswer((_) async => true);
+
+      viewModel.init();
       viewModel.updateGoals(2500, 200);
 
       expect(viewModel.calorieGoal, 2500);
@@ -74,7 +88,8 @@ void main() {
         }
       ]);
 
-      when(mockPrefs.getString('dataEntries')).thenReturn(dataEntryJson);
+      when(mockPrefs.getString(SharedPreferencesKeys.dataEntries.name))
+          .thenReturn(dataEntryJson);
       when(mockPrefs.getInt(any)).thenReturn(null);
 
       viewModel.init();
@@ -115,7 +130,8 @@ void main() {
         }
       ]);
 
-      when(mockPrefs.getString('dataEntries')).thenReturn(dataEntryJson);
+      when(mockPrefs.getString(SharedPreferencesKeys.dataEntries.name))
+          .thenReturn(dataEntryJson);
       when(mockPrefs.getInt(any)).thenReturn(null);
       when(mockPrefs.setString(any, any)).thenAnswer((_) async => true);
       viewModel.init();
@@ -150,7 +166,8 @@ void main() {
         }
       ]);
 
-      when(mockPrefs.getString('dataEntries')).thenReturn(dataEntryJson);
+      when(mockPrefs.getString(SharedPreferencesKeys.dataEntries.name))
+          .thenReturn(dataEntryJson);
       when(mockPrefs.getInt(any)).thenReturn(null);
       when(mockPrefs.setString(any, any)).thenAnswer((_) async => true);
       viewModel.init();

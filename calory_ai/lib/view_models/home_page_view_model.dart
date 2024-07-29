@@ -3,6 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/data_entry.dart';
 
+enum SharedPreferencesKeys {
+  calorieGoal,
+  proteinGoal,
+  dataEntries
+}
+
 class HomePageViewModel extends ChangeNotifier {
   List<DataEntry> _entries = [];
   List<DateTime> _uniqueDates = [];
@@ -29,8 +35,8 @@ class HomePageViewModel extends ChangeNotifier {
 
   Future<void> _loadGoals() async {
     final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
-    _calorieGoal = prefs.getInt('calorieGoal') ?? 0;
-    _proteinGoal = prefs.getInt('proteinGoal') ?? 0;
+    _calorieGoal = prefs.getInt(SharedPreferencesKeys.calorieGoal.name) ?? 0;
+    _proteinGoal = prefs.getInt(SharedPreferencesKeys.proteinGoal.name) ?? 0;
     notifyListeners();
   }
 
@@ -38,14 +44,14 @@ class HomePageViewModel extends ChangeNotifier {
     _calorieGoal = calorieGoal;
     _proteinGoal = proteinGoal;
     final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
-    prefs.setInt('calorieGoal', calorieGoal);
-    prefs.setInt('proteinGoal', proteinGoal);
+    prefs.setInt(SharedPreferencesKeys.calorieGoal.name, calorieGoal);
+    prefs.setInt(SharedPreferencesKeys.proteinGoal.name, proteinGoal);
     notifyListeners();
   }
 
   Future<void> _loadEntries() async {
     final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
-    final String? dataString = prefs.getString('dataEntries');
+    final String? dataString = prefs.getString(SharedPreferencesKeys.dataEntries.name);
     if (dataString != null) {
       final List<dynamic> dataJson = jsonDecode(dataString);
       _entries = dataJson.map((json) => DataEntry.fromJson(json)).toList();
@@ -80,7 +86,7 @@ class HomePageViewModel extends ChangeNotifier {
 
     final String dataString =
         jsonEncode(_entries.map((entry) => entry.toJson()).toList());
-    await prefs.setString('dataEntries', dataString);
+    await prefs.setString(SharedPreferencesKeys.dataEntries.name, dataString);
     notifyListeners();
   }
 
@@ -97,7 +103,7 @@ class HomePageViewModel extends ChangeNotifier {
 
     final String dataString =
         jsonEncode(_entries.map((entry) => entry.toJson()).toList());
-    await prefs.setString('dataEntries', dataString);
+    await prefs.setString(SharedPreferencesKeys.dataEntries.name, dataString);
     notifyListeners();
   }
 
