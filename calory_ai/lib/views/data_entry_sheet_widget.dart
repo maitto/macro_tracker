@@ -1,3 +1,4 @@
+import 'package:calory_ai/models/data_entry.dart';
 import 'package:calory_ai/models/meal_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +12,7 @@ class DataEntrySheetContent extends StatefulWidget {
       this.initialProtein,
       this.initialType});
 
-  final Function(int, int, String) onSave;
+  final Function(DataEntry) onSave;
   final int? initialCalories;
   final int? initialProtein;
   final String? initialType;
@@ -52,7 +53,15 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
     final int protein = int.tryParse(_proteinController.text) ?? 0;
 
     if (!(calories == 0 && protein == 0)) {
-      widget.onSave(calories, protein, _selectedType);
+      final now = DateTime.now();
+      final entry = DataEntry(
+          date: now,
+          calories: calories,
+          protein: protein,
+          fat: fat,
+          carb: carb,
+          type: _selectedType);
+      widget.onSave(entry);
       Navigator.of(context).pop();
       HapticFeedback.lightImpact();
     }

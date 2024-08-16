@@ -26,12 +26,9 @@ class HomePage extends StatelessWidget {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => SettingsPage(
-                  calorieGoal: context.read<HomePageViewModel>().calorieGoal,
-                  proteinGoal: context.read<HomePageViewModel>().proteinGoal,
-                  onGoalsChanged: (calorieGoal, proteinGoal) {
-                    context
-                        .read<HomePageViewModel>()
-                        .updateGoals(calorieGoal, proteinGoal);
+                  goals: context.read<HomePageViewModel>().goals,
+                  onGoalsChanged: (goals) {
+                    context.read<HomePageViewModel>().updateGoals(goals);
                   },
                 ),
               ),
@@ -73,8 +70,7 @@ class HomePage extends StatelessWidget {
                   children: [
                     DailyStats(
                       entries: entriesForDate,
-                      calorieGoal: viewModel.calorieGoal,
-                      proteinGoal: viewModel.proteinGoal,
+                      goals: viewModel.goals,
                     ),
                     Padding(
                       padding: const EdgeInsets.all(AppSpacing.medium),
@@ -110,8 +106,10 @@ class HomePage extends StatelessWidget {
       isScrollControlled: true,
       builder: (BuildContext context) {
         return DataEntrySheetContent(
-          onSave: (calories, protein, type) {
-            context.read<HomePageViewModel>().saveEntry(calories, protein, type);
+          onSave: (entry) {
+            context
+                .read<HomePageViewModel>()
+                .saveEntry(entry);
           },
         );
       },

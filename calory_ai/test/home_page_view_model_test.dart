@@ -1,3 +1,6 @@
+import 'package:calory_ai/models/data_entry.dart';
+import 'package:calory_ai/models/goals.dart';
+import 'package:calory_ai/models/meal_type.dart';
 import 'package:calory_ai/view_models/home_page_view_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,8 +25,10 @@ void main() {
     test('initializes with default values', () {
       expect(viewModel.entries, []);
       expect(viewModel.uniqueDates, []);
-      expect(viewModel.calorieGoal, 0);
-      expect(viewModel.proteinGoal, 0);
+      expect(viewModel.goals.calorie, 0);
+      expect(viewModel.goals.protein, 0);
+      expect(viewModel.goals.fat, 0);
+      expect(viewModel.goals.carb, 0);
     });
 
     test('loads goals from shared preferences', () async {
@@ -31,13 +36,19 @@ void main() {
           .thenReturn(2000);
       when(mockPrefs.getInt(SharedPreferencesKeys.proteinGoal.name))
           .thenReturn(150);
+      when(mockPrefs.getInt(SharedPreferencesKeys.fatGoal.name))
+          .thenReturn(120);
+      when(mockPrefs.getInt(SharedPreferencesKeys.carbGoal.name))
+          .thenReturn(110);
       when(mockPrefs.getString(SharedPreferencesKeys.dataEntries.name))
           .thenReturn(null);
 
       viewModel.init();
 
-      expect(viewModel.calorieGoal, 2000);
-      expect(viewModel.proteinGoal, 150);
+      expect(viewModel.goals.calorie, 2000);
+      expect(viewModel.goals.protein, 150);
+      expect(viewModel.goals.fat, 120);
+      expect(viewModel.goals.carb, 110);
     });
 
     test('stores new goals to shared preferences', () async {
@@ -45,17 +56,26 @@ void main() {
           .thenReturn(2000);
       when(mockPrefs.getInt(SharedPreferencesKeys.proteinGoal.name))
           .thenReturn(150);
+      when(mockPrefs.getInt(SharedPreferencesKeys.fatGoal.name))
+          .thenReturn(120);
+      when(mockPrefs.getInt(SharedPreferencesKeys.carbGoal.name))
+          .thenReturn(110);
       when(mockPrefs.getString(SharedPreferencesKeys.dataEntries.name))
           .thenReturn(null);
       when(mockPrefs.setInt(any, any)).thenAnswer((_) async => true);
 
       viewModel.init();
 
-      viewModel.updateGoals(2500, 180);
+      viewModel
+          .updateGoals(Goals(calorie: 2500, protein: 180, fat: 110, carb: 100));
 
       verify(mockPrefs.setInt(SharedPreferencesKeys.calorieGoal.name, 2500))
           .called(1);
       verify(mockPrefs.setInt(SharedPreferencesKeys.proteinGoal.name, 180))
+          .called(1);
+      verify(mockPrefs.setInt(SharedPreferencesKeys.fatGoal.name, 110))
+          .called(1);
+      verify(mockPrefs.setInt(SharedPreferencesKeys.carbGoal.name, 100))
           .called(1);
     });
 
@@ -71,10 +91,12 @@ void main() {
       when(mockPrefs.setString(any, any)).thenAnswer((_) async => true);
 
       viewModel.init();
-      viewModel.updateGoals(2500, 200);
-
-      expect(viewModel.calorieGoal, 2500);
-      expect(viewModel.proteinGoal, 200);
+      viewModel
+          .updateGoals(Goals(calorie: 2500, protein: 180, fat: 110, carb: 100));
+      expect(viewModel.goals.calorie, 2500);
+      expect(viewModel.goals.protein, 180);
+      expect(viewModel.goals.fat, 110);
+      expect(viewModel.goals.carb, 100);
       expect(isNotified, true);
     });
 
@@ -111,7 +133,14 @@ void main() {
       when(mockPrefs.setString(any, any)).thenAnswer((_) async => true);
       viewModel.init();
 
-      await viewModel.saveEntry(600, 40, 'Snack');
+      final entry = DataEntry(
+          date: DateTime.now(),
+          calories: 600,
+          protein: 40,
+          fat: 30,
+          carb: 20,
+          type: MealType.types.first);
+      await viewModel.saveEntry(entry);
 
       expect(viewModel.entries.length, 1);
       expect(viewModel.entries[0].calories, 600);

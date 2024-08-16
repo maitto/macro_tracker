@@ -20,26 +20,36 @@ void main() {
             date: DateTime(2023, 7, 3),
             calories: 2000,
             protein: 100,
+            fat: 20,
+            carb: 10,
             type: MealType.types.first),
         DataEntry(
             date: DateTime(2023, 7, 4),
             calories: 2500,
             protein: 120,
+            fat: 20,
+            carb: 10,
             type: MealType.types.first),
         DataEntry(
             date: DateTime(2023, 7, 5),
             calories: 1800,
             protein: 90,
+            fat: 25,
+            carb: 15,
             type: MealType.types.first),
         DataEntry(
             date: DateTime(2023, 7, 6),
             calories: 2200,
             protein: 110,
+            fat: 30,
+            carb: 20,
             type: MealType.types.first),
         DataEntry(
             date: DateTime(2023, 7, 7),
             calories: 2100,
             protein: 105,
+            fat: 30,
+            carb: 20,
             type: MealType.types.first),
       ];
       List<WeeklyStat> result = viewModel.getWeeklyStats(entries);
@@ -50,6 +60,8 @@ void main() {
       expect(
           result[0].averageCalories, (2000 + 2500 + 1800 + 2200 + 2100) ~/ 5);
       expect(result[0].averageProtein, (100 + 120 + 90 + 110 + 105) ~/ 5);
+      expect(result[0].averageFat, 25);
+      expect(result[0].averageCarb, 15);
     });
 
     test('getWeeklyStats splits entries correctly across weeks', () {
@@ -58,21 +70,29 @@ void main() {
             date: DateTime(2023, 7, 3),
             calories: 2000,
             protein: 100,
+            fat: 20,
+            carb: 10,
             type: MealType.types.first),
         DataEntry(
             date: DateTime(2023, 7, 4),
             calories: 2500,
             protein: 120,
+            fat: 20,
+            carb: 10,
             type: MealType.types.first),
         DataEntry(
             date: DateTime(2023, 7, 5),
             calories: 1800,
             protein: 90,
+            fat: 20,
+            carb: 10,
             type: MealType.types.first),
         DataEntry(
             date: DateTime(2023, 7, 11),
             calories: 2200,
             protein: 110,
+            fat: 20,
+            carb: 10,
             type: MealType.types.first),
       ];
       List<WeeklyStat> result = viewModel.getWeeklyStats(entries);
@@ -84,6 +104,8 @@ void main() {
       expect(result[0].numberOfWeekDaysWithData, 3);
       expect(result[0].averageCalories, (2000 + 2500 + 1800) ~/ 3);
       expect(result[0].averageProtein, (100 + 120 + 90) ~/ 3);
+      expect(result[0].averageFat, 20);
+      expect(result[0].averageCarb, 10);
 
       // Second week stats
       expect(result[1].startDate, DateTime(2023, 7, 10));
@@ -91,6 +113,8 @@ void main() {
       expect(result[1].numberOfWeekDaysWithData, 1);
       expect(result[1].averageCalories, 2200);
       expect(result[1].averageProtein, 110);
+      expect(result[1].averageFat, 20);
+      expect(result[1].averageCarb, 10);
     });
   });
 }

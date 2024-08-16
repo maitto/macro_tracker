@@ -1,3 +1,4 @@
+import 'package:calory_ai/models/goals.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -6,21 +7,22 @@ import '../models/data_entry.dart';
 enum SharedPreferencesKeys {
   calorieGoal,
   proteinGoal,
+  fatGoal,
+  carbGoal,
   dataEntries
 }
 
 class HomePageViewModel extends ChangeNotifier {
-  List<DataEntry> _entries = [];
-  List<DateTime> _uniqueDates = [];
-  int _calorieGoal = 0;
-  int _proteinGoal = 0;
-  late PageController _pageController;
-
   List<DataEntry> get entries => _entries;
   List<DateTime> get uniqueDates => _uniqueDates;
-  int get calorieGoal => _calorieGoal;
-  int get proteinGoal => _proteinGoal;
+  Goals get goals => _goals;
+
   PageController get pageController => _pageController;
+
+  List<DataEntry> _entries = [];
+  List<DateTime> _uniqueDates = [];
+  Goals _goals = Goals(calorie: 0, protein: 0, fat: 0, carb: 0);
+  late PageController _pageController;
   SharedPreferences? _sharedPreferences;
 
   HomePageViewModel([SharedPreferences? sharedPreferences]) {
@@ -35,23 +37,29 @@ class HomePageViewModel extends ChangeNotifier {
 
   Future<void> _loadGoals() async {
     final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
-    _calorieGoal = prefs.getInt(SharedPreferencesKeys.calorieGoal.name) ?? 0;
-    _proteinGoal = prefs.getInt(SharedPreferencesKeys.proteinGoal.name) ?? 0;
+    _goals.calorie = prefs.getInt(SharedPreferencesKeys.calorieGoal.name) ?? 0;
+    _goals.protein = prefs.getInt(SharedPreferencesKeys.proteinGoal.name) ?? 0;
+    _goals.fat = prefs.getInt(SharedPreferencesKeys.fatGoal.name) ?? 0;
+    _goals.carb = prefs.getInt(SharedPreferencesKeys.carbGoal.name) ?? 0;
+
     notifyListeners();
   }
 
-  void updateGoals(int calorieGoal, int proteinGoal) async {
-    _calorieGoal = calorieGoal;
-    _proteinGoal = proteinGoal;
+  void updateGoals(Goals goals) async {
+    _goals = goals;
     final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
-    prefs.setInt(SharedPreferencesKeys.calorieGoal.name, calorieGoal);
-    prefs.setInt(SharedPreferencesKeys.proteinGoal.name, proteinGoal);
+    prefs.setInt(SharedPreferencesKeys.calorieGoal.name, goals.calorie);
+    prefs.setInt(SharedPreferencesKeys.proteinGoal.name, goals.protein);
+    prefs.setInt(SharedPreferencesKeys.fatGoal.name, goals.fat);
+    prefs.setInt(SharedPreferencesKeys.carbGoal.name, goals.carb);
+
     notifyListeners();
   }
 
   Future<void> _loadEntries() async {
     final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
-    final String? dataString = prefs.getString(SharedPreferencesKeys.dataEntries.name);
+    final String? dataString =
+        prefs.getString(SharedPreferencesKeys.dataEntries.name);
     if (dataString != null) {
       final List<dynamic> dataJson = jsonDecode(dataString);
       _entries = dataJson.map((json) => DataEntry.fromJson(json)).toList();
@@ -65,16 +73,8 @@ class HomePageViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> saveEntry(int calories, int protein, String type) async {
+  Future<void> saveEntry(DataEntry newEntry) async {
     final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
-    final now = DateTime.now();
-
-    final newEntry = DataEntry(
-      date: now,
-      calories: calories,
-      protein: protein,
-      type: type,
-    );
 
     _entries.add(newEntry);
     _entries.sort((a, b) => b.date.compareTo(a.date));

@@ -3,11 +3,15 @@ class DataEntry {
   final String type;
   int calories;
   int protein;
+  int fat;
+  int carb;
 
   DataEntry(
       {required this.date,
       required this.calories,
       required this.protein,
+      required this.fat,
+      required this.carb,
       required this.type});
 
   Map<String, dynamic> toJson() => {
@@ -23,6 +27,8 @@ class DataEntry {
       type: json['type'],
       calories: json['calories'],
       protein: json['protein'],
+      fat: json['fat'],
+      carb: json['carb']
     );
   }
 }

@@ -1,3 +1,4 @@
+import '../models/goals.dart';
 import '../utils/size_contants.dart';
 import 'package:flutter/material.dart';
 import '../models/data_entry.dart';
@@ -5,14 +6,9 @@ import 'package:intl/intl.dart';
 
 class DailyStats extends StatelessWidget {
   final List<DataEntry> entries;
-  final int calorieGoal;
-  final int proteinGoal;
+  final Goals goals;
 
-  const DailyStats(
-      {required this.entries,
-      required this.calorieGoal,
-      required this.proteinGoal,
-      super.key});
+  const DailyStats({super.key, required this.entries, required this.goals});
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +20,13 @@ class DailyStats extends StatelessWidget {
       totalProtein += entry.protein;
     }
 
-    int remainingCalories = calorieGoal - totalCalories;
-    int remainingProtein = proteinGoal - totalProtein;
+    int remainingCalories = goals.calorie - totalCalories;
+    int remainingProtein = goals.protein - totalProtein;
 
     final double calorieProgress =
-        (calorieGoal > 0) ? totalCalories / calorieGoal : 0.0;
+        (goals.calorie > 0) ? totalCalories / goals.calorie : 0.0;
     final double proteinProgress =
-        (proteinGoal > 0) ? totalProtein / proteinGoal : 0.0;
+        (goals.protein > 0) ? totalProtein / goals.protein : 0.0;
 
     Locale locale = Localizations.localeOf(context);
     DateFormat dateFormat = DateFormat.MEd(locale.toString());
@@ -57,7 +53,7 @@ class DailyStats extends StatelessWidget {
                 const Icon(Icons.local_fire_department, color: Colors.orange),
                 const SizedBox(width: AppSizedBox.medium),
                 Text(
-                  'Total Calories: $totalCalories / $calorieGoal',
+                  'Total Calories: $totalCalories / ${goals.calorie}',
                   style: const TextStyle(fontSize: AppFont.large),
                 ),
               ],
@@ -87,7 +83,7 @@ class DailyStats extends StatelessWidget {
                 const Icon(Icons.fitness_center, color: Colors.blue),
                 const SizedBox(width: AppSizedBox.medium),
                 Text(
-                  'Total Protein: $totalProtein / $proteinGoal',
+                  'Total Protein: $totalProtein / ${goals.protein}',
                   style: const TextStyle(fontSize: AppFont.large),
                 ),
               ],
