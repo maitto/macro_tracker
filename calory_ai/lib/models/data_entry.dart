@@ -25,10 +25,10 @@ class DataEntry {
     return DataEntry(
       date: DateTime.parse(json['date']),
       type: json['type'],
-      calories: json['calories'],
-      protein: json['protein'],
-      fat: json['fat'],
-      carb: json['carb']
+      calories: json['calories'] ?? 0,
+      protein: json['protein'] ?? 0,
+      fat: json['fat'] ?? 0,
+      carb: json['carb'] ?? 0
     );
   }
 }

@@ -5,17 +5,9 @@ import 'package:flutter/services.dart';
 import '../utils/size_contants.dart';
 
 class DataEntrySheetContent extends StatefulWidget {
-  const DataEntrySheetContent(
-      {super.key,
-      required this.onSave,
-      this.initialCalories,
-      this.initialProtein,
-      this.initialType});
+  const DataEntrySheetContent({super.key, required this.onSave});
 
   final Function(DataEntry) onSave;
-  final int? initialCalories;
-  final int? initialProtein;
-  final String? initialType;
 
   @override
   DataEntrySheetState createState() => DataEntrySheetState();
@@ -23,18 +15,17 @@ class DataEntrySheetContent extends StatefulWidget {
 
 class DataEntrySheetState extends State<DataEntrySheetContent> {
   final FocusNode _caloriesFocusNode = FocusNode();
-  late TextEditingController _caloriesController;
-  late TextEditingController _proteinController;
-  String _selectedType = '';
+  final TextEditingController _caloriesController =
+      TextEditingController(text: '');
+  final TextEditingController _proteinController =
+      TextEditingController(text: '');
+  final TextEditingController _fatController = TextEditingController(text: '');
+  final TextEditingController _carbController = TextEditingController(text: '');
+  String _selectedType = MealType.types.first;
 
   @override
   void initState() {
     super.initState();
-    _caloriesController =
-        TextEditingController(text: widget.initialCalories?.toString() ?? '');
-    _proteinController =
-        TextEditingController(text: widget.initialProtein?.toString() ?? '');
-    _selectedType = widget.initialType ?? MealType.types.first;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _caloriesFocusNode.requestFocus();
     });
@@ -51,8 +42,10 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
   void _saveData() {
     final int calories = int.tryParse(_caloriesController.text) ?? 0;
     final int protein = int.tryParse(_proteinController.text) ?? 0;
+    final int fat = int.tryParse(_fatController.text) ?? 0;
+    final int carb = int.tryParse(_carbController.text) ?? 0;
 
-    if (!(calories == 0 && protein == 0)) {
+    if (!(calories == 0 && protein == 0 && fat == 0 && carb == 0)) {
       final now = DateTime.now();
       final entry = DataEntry(
           date: now,
@@ -100,6 +93,30 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
                 controller: _proteinController,
                 decoration: const InputDecoration(
                   labelText: 'Protein',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+              ),
+              const SizedBox(height: AppSizedBox.medium),
+              TextFormField(
+                controller: _fatController,
+                decoration: const InputDecoration(
+                  labelText: 'Fat',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
+              ),
+              const SizedBox(height: AppSizedBox.medium),
+              TextFormField(
+                controller: _carbController,
+                decoration: const InputDecoration(
+                  labelText: 'Carb',
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,

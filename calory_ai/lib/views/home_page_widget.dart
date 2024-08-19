@@ -107,9 +107,7 @@ class HomePage extends StatelessWidget {
       builder: (BuildContext context) {
         return DataEntrySheetContent(
           onSave: (entry) {
-            context
-                .read<HomePageViewModel>()
-                .saveEntry(entry);
+            context.read<HomePageViewModel>().saveEntry(entry);
           },
         );
       },
@@ -132,6 +130,10 @@ class HomePage extends StatelessWidget {
             .fold(0, (sum, entry) => sum + entry.calories);
         int totalProtein = entriesByMealType[mealType]!
             .fold(0, (sum, entry) => sum + entry.protein);
+        int totalFat = entriesByMealType[mealType]!
+            .fold(0, (sum, entry) => sum + entry.fat);
+        int totalCarb = entriesByMealType[mealType]!
+            .fold(0, (sum, entry) => sum + entry.carb);
 
         entryWidgets.add(
           Column(
@@ -139,7 +141,7 @@ class HomePage extends StatelessWidget {
             children: [
               const Divider(height: 40, thickness: 1),
               Text(
-                mealType,
+                'Totals for $mealType',
                 style: TextStyle(
                   fontSize: AppFont.large,
                   fontWeight: FontWeight.bold,
@@ -151,18 +153,37 @@ class HomePage extends StatelessWidget {
                 children: [
                   const Icon(Icons.local_fire_department, color: Colors.orange),
                   const SizedBox(width: AppSizedBox.medium),
+                  SizedBox(
+                    width: 130.0,
+                    child: Text(
+                      'Calories: $totalCalories',
+                      style: const TextStyle(fontSize: AppFont.medium),
+                    ),
+                  ),
+                  const Icon(Icons.fitness_center, color: Colors.blue),
+                  const SizedBox(width: AppSizedBox.medium),
                   Text(
-                    '$mealType calories: $totalCalories',
+                    'Protein: $totalProtein',
                     style: const TextStyle(fontSize: AppFont.medium),
                   ),
                 ],
               ),
+              const SizedBox(height: AppSizedBox.small),
               Row(
                 children: [
-                  const Icon(Icons.fitness_center, color: Colors.blue),
+                  const Icon(Icons.kebab_dining, color: Colors.red),
+                  const SizedBox(width: AppSizedBox.medium),
+                  SizedBox(
+                    width: 130.0,
+                    child: Text(
+                      'Fat: $totalFat',
+                      style: const TextStyle(fontSize: AppFont.medium),
+                    ),
+                  ),
+                  const Icon(Icons.grain, color: Colors.yellow),
                   const SizedBox(width: AppSizedBox.medium),
                   Text(
-                    '$mealType protein: $totalProtein',
+                    'Carb: $totalCarb',
                     style: const TextStyle(fontSize: AppFont.medium),
                   ),
                 ],
@@ -199,8 +220,17 @@ class HomePage extends StatelessWidget {
                     const Icon(Icons.local_fire_department,
                         color: Colors.orange),
                     const SizedBox(width: AppSizedBox.medium),
+                    SizedBox(
+                      width: 130.0,
+                      child: Text(
+                        '${entry.calories}',
+                        style: const TextStyle(fontSize: AppFont.medium),
+                      ),
+                    ),
+                    const Icon(Icons.fitness_center, color: Colors.blue),
+                    const SizedBox(width: AppSizedBox.medium),
                     Text(
-                      '${entry.calories}',
+                      '${entry.protein}',
                       style: const TextStyle(fontSize: AppFont.medium),
                     ),
                   ],
@@ -208,10 +238,19 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: AppSizedBox.small),
                 Row(
                   children: [
-                    const Icon(Icons.fitness_center, color: Colors.blue),
+                    const Icon(Icons.kebab_dining, color: Colors.red),
+                    const SizedBox(width: AppSizedBox.medium),
+                    SizedBox(
+                      width: 130.0,
+                      child: Text(
+                        '${entry.fat}',
+                        style: const TextStyle(fontSize: AppFont.medium),
+                      ),
+                    ),
+                    const Icon(Icons.grain, color: Colors.yellow),
                     const SizedBox(width: AppSizedBox.medium),
                     Text(
-                      '${entry.protein}',
+                      '${entry.carb}',
                       style: const TextStyle(fontSize: AppFont.medium),
                     ),
                   ],
