@@ -1,5 +1,6 @@
 class AppSpacing {
   static const double medium = 16;
+    static const double large = 32;
 }
 
 class AppFont {

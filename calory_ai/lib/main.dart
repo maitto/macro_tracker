@@ -18,30 +18,30 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => HomePageViewModel()..init()),
       ],
       child: MaterialApp(
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en', ''), // English
-        Locale('fi', ''), // FI
-        // Add other supported locales here
-      ],
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue, brightness: Brightness.light),
-        useMaterial3: true,
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue, brightness: Brightness.dark),
-        useMaterial3: true,
-      ),
-      themeMode: ThemeMode.system, // Use system theme mode (light/dark)
-      home: const HomePage(title: 'Calory AI'),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en', ''), // English
+          Locale('fi', ''), // FI
+          // Add other supported locales here
+        ],
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue, brightness: Brightness.light),
+          useMaterial3: true,
+        ),
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.blue, brightness: Brightness.dark),
+          useMaterial3: true,
+        ),
+        themeMode: ThemeMode.system, // Use system theme mode (light/dark)
+        home: const HomePage(title: 'Simple Macro Tracker'),
       ),
     );
   }

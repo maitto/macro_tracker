@@ -145,7 +145,7 @@ void main() {
       expect(viewModel.entries.length, 1);
       expect(viewModel.entries[0].calories, 600);
       expect(viewModel.entries[0].protein, 40);
-      expect(viewModel.entries[0].type, 'Snack');
+      expect(viewModel.entries[0].type, MealType.types.first);
       expect(isNotified, true);
     });
 

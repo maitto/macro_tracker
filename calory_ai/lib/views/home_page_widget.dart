@@ -56,35 +56,53 @@ class HomePage extends StatelessWidget {
       ),
       body: Consumer<HomePageViewModel>(
         builder: (context, viewModel, child) {
-          return PageView.builder(
-            controller: viewModel.pageController,
-            itemCount: viewModel.uniqueDates.length,
-            reverse: true,
-            itemBuilder: (context, index) {
-              final date = viewModel.uniqueDates[index];
-              final entriesForDate = viewModel.entriesForDate(date);
+          if (viewModel.uniqueDates.isNotEmpty) {
+            return PageView.builder(
+              controller: viewModel.pageController,
+              itemCount: viewModel.uniqueDates.length,
+              reverse: true,
+              itemBuilder: (context, index) {
+                final date = viewModel.uniqueDates[index];
+                final entriesForDate = viewModel.entriesForDate(date);
 
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    DailyStats(
-                      entries: entriesForDate,
-                      goals: viewModel.goals,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(AppSpacing.medium),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _buildEntriesByMealType(
-                            entriesForDate, context, viewModel),
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DailyStats(
+                        entries: entriesForDate,
+                        goals: viewModel.goals,
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(AppSpacing.medium),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: _buildEntriesByMealType(
+                                entriesForDate, context, viewModel)),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          } else {
+            return const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(AppSpacing.large),
+                  child: Text(
+                    'No entries yet, start by tapping the "+" button',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: AppFont.xLarge,
+                      fontWeight: FontWeight.bold,
                     ),
-                  ],
+                  ),
                 ),
-              );
-            },
-          );
+              ],
+            );
+          }
         },
       ),
       floatingActionButton: Column(
@@ -171,7 +189,7 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: AppSizedBox.small),
               Row(
                 children: [
-                  const Icon(Icons.kebab_dining, color: Colors.red),
+                  const Icon(Icons.water_drop, color: Colors.red),
                   const SizedBox(width: AppSizedBox.medium),
                   SizedBox(
                     width: 130.0,
@@ -180,7 +198,7 @@ class HomePage extends StatelessWidget {
                       style: const TextStyle(fontSize: AppFont.medium),
                     ),
                   ),
-                  const Icon(Icons.grain, color: Colors.yellow),
+                  const Icon(Icons.grass, color: Colors.yellow),
                   const SizedBox(width: AppSizedBox.medium),
                   Text(
                     'Carb: $totalCarb',
@@ -238,7 +256,7 @@ class HomePage extends StatelessWidget {
                 const SizedBox(height: AppSizedBox.small),
                 Row(
                   children: [
-                    const Icon(Icons.kebab_dining, color: Colors.red),
+                    const Icon(Icons.water_drop, color: Colors.red),
                     const SizedBox(width: AppSizedBox.medium),
                     SizedBox(
                       width: 130.0,
@@ -247,7 +265,7 @@ class HomePage extends StatelessWidget {
                         style: const TextStyle(fontSize: AppFont.medium),
                       ),
                     ),
-                    const Icon(Icons.grain, color: Colors.yellow),
+                    const Icon(Icons.grass, color: Colors.yellow),
                     const SizedBox(width: AppSizedBox.medium),
                     Text(
                       '${entry.carb}',
