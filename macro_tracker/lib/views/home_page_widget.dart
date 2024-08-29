@@ -100,7 +100,7 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: AppSizedBox.xxLarge),
+                SizedBox(height: AppSizedBox.xxLarge),
                 Padding(
                   padding: EdgeInsets.all(AppSpacing.large),
                   child: Text(
