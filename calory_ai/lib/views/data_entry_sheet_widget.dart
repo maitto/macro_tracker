@@ -134,7 +134,7 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
                   });
                 },
               ),
-              const SizedBox(height: AppSizedBox.xLarge),
+              const SizedBox(height: AppSizedBox.large),
               ElevatedButton(
                 onPressed: _saveData,
                 child: const Text('Save'),

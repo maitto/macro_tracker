@@ -92,7 +92,19 @@ class HomePage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(AppSpacing.large),
                   child: Text(
-                    'No entries yet, start by tapping the "+" button',
+                    'Add your goals from the settings icon',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: AppFont.xLarge,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: AppSizedBox.xxLarge),
+                Padding(
+                  padding: EdgeInsets.all(AppSpacing.large),
+                  child: Text(
+                    'Add entries by tapping the "+" button',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: AppFont.xLarge,
