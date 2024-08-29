@@ -23,17 +23,24 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _calorieGoalController.text = widget.goals.calorie.toString();
-    _proteinGoalController.text = widget.goals.protein.toString();
-    _fatGoalController.text = widget.goals.fat.toString();
-    _carbGoalController.text = widget.goals.carb.toString();
+    _calorieGoalController.text =
+        widget.goals.calorie == 0 ? '' : widget.goals.calorie.toString();
+
+    _proteinGoalController.text =
+        widget.goals.protein == 0 ? '' : widget.goals.protein.toString();
+
+    _fatGoalController.text =
+        widget.goals.fat == 0 ? '' : widget.goals.fat.toString();
+
+    _carbGoalController.text =
+        widget.goals.carb == 0 ? '' : widget.goals.carb.toString();
   }
 
   void _saveGoalsTapped() {
-    final int calorieGoal = int.parse(_calorieGoalController.text);
-    final int proteinGoal = int.parse(_proteinGoalController.text);
-    final int fatGoal = int.parse(_fatGoalController.text);
-    final int carbGoal = int.parse(_carbGoalController.text);
+    final int calorieGoal = int.tryParse(_calorieGoalController.text) ?? 0;
+    final int proteinGoal = int.tryParse(_proteinGoalController.text) ?? 0;
+    final int fatGoal = int.tryParse(_fatGoalController.text) ?? 0;
+    final int carbGoal = int.tryParse(_carbGoalController.text) ?? 0;
     final Goals goals = Goals(
         calorie: calorieGoal,
         protein: proteinGoal,
