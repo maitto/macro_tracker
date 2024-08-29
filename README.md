@@ -1,4 +1,4 @@
-# macro_tracker
+# Simple Macro Tracker
 
 A Simple Macro Tracker for tracking your calories, protein, fat and carbs.
 
