@@ -42,6 +42,8 @@ dependencies:
     sdk: flutter
   http: ^1.2.1
   provider: ^6.1.2
+  firebase_core: ^2.24.2
+  firebase_analytics: ^10.8.0
 
 dev_dependencies:
   flutter_test:

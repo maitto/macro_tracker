@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/data_entry.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 enum SharedPreferencesKeys {
   calorieGoal,
@@ -24,6 +25,7 @@ class HomePageViewModel extends ChangeNotifier {
   Goals _goals = Goals(calorie: 0, protein: 0, fat: 0, carb: 0);
   late PageController _pageController;
   SharedPreferences? _sharedPreferences;
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
 
   HomePageViewModel([SharedPreferences? sharedPreferences]) {
     _sharedPreferences = sharedPreferences;
@@ -43,6 +45,8 @@ class HomePageViewModel extends ChangeNotifier {
     _goals.carb = prefs.getInt(SharedPreferencesKeys.carbGoal.name) ?? 0;
 
     notifyListeners();
+
+    await FirebaseAnalytics.instance.logEvent(name: "loadGoals");
   }
 
   void updateGoals(Goals goals) async {
@@ -54,6 +58,8 @@ class HomePageViewModel extends ChangeNotifier {
     prefs.setInt(SharedPreferencesKeys.carbGoal.name, goals.carb);
 
     notifyListeners();
+
+    await FirebaseAnalytics.instance.logEvent(name: "updateGoals");
   }
 
   Future<void> _loadEntries() async {
@@ -70,6 +76,8 @@ class HomePageViewModel extends ChangeNotifier {
           .toList();
       _uniqueDates.sort((a, b) => b.compareTo(a));
       notifyListeners();
+
+      await FirebaseAnalytics.instance.logEvent(name: "_loadEntries");
     }
   }
 
@@ -88,6 +96,8 @@ class HomePageViewModel extends ChangeNotifier {
         jsonEncode(_entries.map((entry) => entry.toJson()).toList());
     await prefs.setString(SharedPreferencesKeys.dataEntries.name, dataString);
     notifyListeners();
+
+    await FirebaseAnalytics.instance.logEvent(name: "saveEntry");
   }
 
   Future<void> deleteEntry(int entryIndex) async {
@@ -105,6 +115,8 @@ class HomePageViewModel extends ChangeNotifier {
         jsonEncode(_entries.map((entry) => entry.toJson()).toList());
     await prefs.setString(SharedPreferencesKeys.dataEntries.name, dataString);
     notifyListeners();
+
+    await FirebaseAnalytics.instance.logEvent(name: "deleteEntry");
   }
 
   List<DataEntry> entriesForDate(DateTime date) {
