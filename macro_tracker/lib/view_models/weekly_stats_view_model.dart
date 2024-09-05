@@ -35,16 +35,14 @@ class WeeklyStatsViewModel {
     int totalProtein = 0;
     int totalFat = 0;
     int totalCarb = 0;
-    final List<int> numberOfWeekDaysWithData = [];
+    final Set<int> numberOfWeekDaysWithData = {};
 
     for (var entry in entries) {
       totalCalories += entry.calories;
       totalProtein += entry.protein;
       totalFat += entry.fat;
       totalCarb += entry.carb;
-      if (!(numberOfWeekDaysWithData.contains(entry.date.weekday))) {
-        numberOfWeekDaysWithData.add(entry.date.weekday);
-      }
+      numberOfWeekDaysWithData.add(entry.date.weekday);
     }
 
     return WeeklyStat(
