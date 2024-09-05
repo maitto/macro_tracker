@@ -19,7 +19,8 @@ void main() {
 
     setUp(() {
       mockPrefs = MockSharedPreferences();
-      viewModel = HomePageViewModel(mockPrefs);
+      viewModel = HomePageViewModel();
+      viewModel.prefs = mockPrefs;
     });
 
     test('initializes with default values', () {

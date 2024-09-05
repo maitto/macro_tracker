@@ -90,7 +90,7 @@ class SettingsPageState extends State<SettingsPage> {
               decoration: const InputDecoration(labelText: 'Carb Goal'),
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: AppSizedBox.xLarge),
+            SizedBoxWithHeight.xLarge,
             ElevatedButton(
               onPressed: () {
                 _saveGoalsTapped();

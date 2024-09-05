@@ -24,21 +24,16 @@ class HomePageViewModel extends ChangeNotifier {
   List<DateTime> _uniqueDates = [];
   Goals _goals = Goals(calorie: 0, protein: 0, fat: 0, carb: 0);
   late PageController _pageController;
-  SharedPreferences? _sharedPreferences;
-  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  late SharedPreferences prefs;
 
-  HomePageViewModel([SharedPreferences? sharedPreferences]) {
-    _sharedPreferences = sharedPreferences;
-  }
-
-  void init() {
+  Future<void> init() async {
+    prefs = await SharedPreferences.getInstance();
     _pageController = PageController(initialPage: 0);
     _loadEntries();
     _loadGoals();
   }
 
   Future<void> _loadGoals() async {
-    final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
     _goals.calorie = prefs.getInt(SharedPreferencesKeys.calorieGoal.name) ?? 0;
     _goals.protein = prefs.getInt(SharedPreferencesKeys.proteinGoal.name) ?? 0;
     _goals.fat = prefs.getInt(SharedPreferencesKeys.fatGoal.name) ?? 0;
@@ -51,7 +46,6 @@ class HomePageViewModel extends ChangeNotifier {
 
   void updateGoals(Goals goals) async {
     _goals = goals;
-    final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
     prefs.setInt(SharedPreferencesKeys.calorieGoal.name, goals.calorie);
     prefs.setInt(SharedPreferencesKeys.proteinGoal.name, goals.protein);
     prefs.setInt(SharedPreferencesKeys.fatGoal.name, goals.fat);
@@ -63,7 +57,6 @@ class HomePageViewModel extends ChangeNotifier {
   }
 
   Future<void> _loadEntries() async {
-    final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
     final String? dataString =
         prefs.getString(SharedPreferencesKeys.dataEntries.name);
     if (dataString != null) {
@@ -82,8 +75,6 @@ class HomePageViewModel extends ChangeNotifier {
   }
 
   Future<void> saveEntry(DataEntry newEntry) async {
-    final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
-
     _entries.add(newEntry);
     _entries.sort((a, b) => b.date.compareTo(a.date));
     _uniqueDates = _entries
@@ -101,8 +92,6 @@ class HomePageViewModel extends ChangeNotifier {
   }
 
   Future<void> deleteEntry(int entryIndex) async {
-    final prefs = _sharedPreferences ?? await SharedPreferences.getInstance();
-
     _entries.removeAt(entryIndex);
     _entries.sort((a, b) => b.date.compareTo(a.date));
     _uniqueDates = _entries

@@ -31,63 +31,59 @@ class WeeklyStatsPage extends StatelessWidget {
                   children: [
                     Text(
                       '${DateFormat.yMMMd().format(weekStats.startDate)} - ${DateFormat.yMMMd().format(weekStats.endDate)}',
-                      style: TextStyle(
-                        fontSize: AppFont.xLarge,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    const SizedBox(height: AppSizedBox.medium),
+                    SizedBoxWithHeight.medium,
                     Row(
                       children: [
                         Text(
                           'Number of days with data: ${weekStats.numberOfWeekDaysWithData}',
-                          style: const TextStyle(fontSize: AppFont.small),
+                          style: Theme.of(context).textTheme.titleSmall,
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSizedBox.medium),
+                    SizedBoxWithHeight.medium,
                     Row(
                       children: [
                         const Icon(Icons.local_fire_department,
                             color: Colors.orange),
-                        const SizedBox(width: AppSizedBox.medium),
+                        SizedBoxWithWidth.medium,
                         Text(
                           'Average Daily Calories: ${weekStats.averageCalories}',
-                          style: const TextStyle(fontSize: AppFont.large),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSizedBox.medium),
+                    SizedBoxWithHeight.medium,
                     Row(
                       children: [
                         const Icon(Icons.fitness_center, color: Colors.blue),
-                        const SizedBox(width: AppSizedBox.medium),
+                        SizedBoxWithWidth.medium,
                         Text(
                           'Average Daily Protein: ${weekStats.averageProtein}',
-                          style: const TextStyle(fontSize: AppFont.large),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSizedBox.medium),
+                    SizedBoxWithHeight.medium,
                     Row(
                       children: [
                         const Icon(Icons.water_drop, color: Colors.red),
-                        const SizedBox(width: AppSizedBox.medium),
+                        SizedBoxWithWidth.medium,
                         Text(
                           'Average Daily Fat: ${weekStats.averageFat}',
-                          style: const TextStyle(fontSize: AppFont.large),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
-                    const SizedBox(height: AppSizedBox.medium),
+                    SizedBoxWithHeight.medium,
                     Row(
                       children: [
                         const Icon(Icons.grass, color: Colors.yellow),
-                        const SizedBox(width: AppSizedBox.medium),
+                        SizedBoxWithWidth.medium,
                         Text(
                           'Average Daily Carb: ${weekStats.averageCarb}',
-                          style: const TextStyle(fontSize: AppFont.large),
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
@@ -103,20 +99,17 @@ class WeeklyStatsPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Weekly Stats'),
         ),
-        body: const Column(
+        body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.all(AppSpacing.large),
+              padding: const EdgeInsets.all(AppSpacing.large),
               child: Center(
                 child: Text(
                   'Nothing here yet',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: AppFont.xLarge,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
             ),

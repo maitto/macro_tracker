@@ -86,30 +86,24 @@ class HomePage extends StatelessWidget {
               },
             );
           } else {
-            return const Column(
+            return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: EdgeInsets.all(AppSpacing.large),
+                  padding: const EdgeInsets.all(AppSpacing.large),
                   child: Text(
                     'Add your goals from the settings icon',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: AppFont.xLarge,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
-                SizedBox(height: AppSizedBox.xxLarge),
+                SizedBoxWithHeight.xxLarge,
                 Padding(
-                  padding: EdgeInsets.all(AppSpacing.large),
+                  padding: const EdgeInsets.all(AppSpacing.large),
                   child: Text(
                     'Add entries by tapping the "+" button',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: AppFont.xLarge,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ),
               ],
@@ -172,53 +166,49 @@ class HomePage extends StatelessWidget {
               const Divider(height: 40, thickness: 1),
               Text(
                 'Totals for $mealType',
-                style: TextStyle(
-                  fontSize: AppFont.large,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              const SizedBox(height: AppSizedBox.small),
+              SizedBoxWithHeight.small,
               Row(
                 children: [
                   const Icon(Icons.local_fire_department, color: Colors.orange),
-                  const SizedBox(width: AppSizedBox.medium),
+                  SizedBoxWithWidth.medium,
                   SizedBox(
                     width: 130.0,
                     child: Text(
                       'Calories: $totalCalories',
-                      style: const TextStyle(fontSize: AppFont.medium),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),
                   const Icon(Icons.fitness_center, color: Colors.blue),
-                  const SizedBox(width: AppSizedBox.medium),
+                  SizedBoxWithWidth.medium,
                   Text(
                     'Protein: $totalProtein',
-                    style: const TextStyle(fontSize: AppFont.medium),
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ],
               ),
-              const SizedBox(height: AppSizedBox.small),
+              SizedBoxWithHeight.small,
               Row(
                 children: [
                   const Icon(Icons.water_drop, color: Colors.red),
-                  const SizedBox(width: AppSizedBox.medium),
+                  SizedBoxWithWidth.medium,
                   SizedBox(
                     width: 130.0,
                     child: Text(
                       'Fat: $totalFat',
-                      style: const TextStyle(fontSize: AppFont.medium),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),
                   const Icon(Icons.grass, color: Colors.yellow),
-                  const SizedBox(width: AppSizedBox.medium),
+                  SizedBoxWithWidth.medium,
                   Text(
                     'Carb: $totalCarb',
-                    style: const TextStyle(fontSize: AppFont.medium),
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ],
               ),
-              const SizedBox(height: AppSizedBox.large),
+              SizedBoxWithHeight.large,
             ],
           ),
         );
@@ -235,57 +225,53 @@ class HomePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: AppSizedBox.medium),
+                SizedBoxWithHeight.medium,
                 Text(
                   formattedTime,
-                  style: TextStyle(
-                    fontSize: AppFont.medium,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
-                const SizedBox(height: AppSizedBox.small),
+                SizedBoxWithHeight.small,
                 Row(
                   children: [
                     const Icon(Icons.local_fire_department,
                         color: Colors.orange),
-                    const SizedBox(width: AppSizedBox.medium),
+                    SizedBoxWithWidth.medium,
                     SizedBox(
                       width: 130.0,
                       child: Text(
                         '${entry.calories}',
-                        style: const TextStyle(fontSize: AppFont.medium),
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                     const Icon(Icons.fitness_center, color: Colors.blue),
-                    const SizedBox(width: AppSizedBox.medium),
+                    SizedBoxWithWidth.medium,
                     Text(
                       '${entry.protein}',
-                      style: const TextStyle(fontSize: AppFont.medium),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSizedBox.small),
+                SizedBoxWithHeight.small,
                 Row(
                   children: [
                     const Icon(Icons.water_drop, color: Colors.red),
-                    const SizedBox(width: AppSizedBox.medium),
+                    SizedBoxWithWidth.medium,
                     SizedBox(
                       width: 130.0,
                       child: Text(
                         '${entry.fat}',
-                        style: const TextStyle(fontSize: AppFont.medium),
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                     const Icon(Icons.grass, color: Colors.yellow),
-                    const SizedBox(width: AppSizedBox.medium),
+                    SizedBoxWithWidth.medium,
                     Text(
                       '${entry.carb}',
-                      style: const TextStyle(fontSize: AppFont.medium),
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ],
                 ),
-                const SizedBox(height: AppSizedBox.medium),
+                SizedBoxWithHeight.medium,
               ],
             ),
           );

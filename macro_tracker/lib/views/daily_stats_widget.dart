@@ -47,34 +47,30 @@ class DailyStats extends StatelessWidget {
           children: [
             Text(
               'Stats for $formattedDate',
-              style: TextStyle(
-                fontSize: AppFont.xLarge,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              style: Theme.of(context).textTheme.titleLarge,
             ),
-            const SizedBox(height: AppSizedBox.medium),
+            SizedBoxWithHeight.medium,
             // calories section
             Row(
               children: [
                 const Icon(Icons.local_fire_department, color: Colors.orange),
-                const SizedBox(width: AppSizedBox.medium),
+                SizedBoxWithWidth.medium,
                 Text(
                   'Days Calories: $totalCalories / ${goals.calorie}',
-                  style: const TextStyle(fontSize: AppFont.large),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),
             Row(
               children: [
-                const SizedBox(width: AppSizedBox.xxLarge),
+                SizedBoxWithWidth.xxLarge,
                 Text(
                   'Remaining: $remainingCalories',
-                  style: const TextStyle(fontSize: AppFont.medium),
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ],
             ),
-            const SizedBox(height: AppSizedBox.small),
+            SizedBoxWithHeight.small,
             ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
               child: LinearProgressIndicator(
@@ -84,28 +80,28 @@ class DailyStats extends StatelessWidget {
                 color: calorieProgress > 1 ? Colors.red : Colors.orange,
               ),
             ),
-            const SizedBox(height: AppSizedBox.large),
+            SizedBoxWithHeight.large,
             // protein section
             Row(
               children: [
                 const Icon(Icons.fitness_center, color: Colors.blue),
-                const SizedBox(width: AppSizedBox.medium),
+                SizedBoxWithWidth.medium,
                 Text(
                   'Days Protein: $totalProtein / ${goals.protein}',
-                  style: const TextStyle(fontSize: AppFont.large),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),
             Row(
               children: [
-                const SizedBox(width: AppSizedBox.xxLarge),
+                SizedBoxWithWidth.xxLarge,
                 Text(
                   'Remaining: $remainingProtein',
-                  style: const TextStyle(fontSize: AppFont.medium),
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ],
             ),
-            const SizedBox(height: AppSizedBox.small),
+            SizedBoxWithHeight.small,
             ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
               child: LinearProgressIndicator(
@@ -115,28 +111,28 @@ class DailyStats extends StatelessWidget {
                 color: proteinProgress > 1 ? Colors.red : Colors.blue,
               ),
             ),
-            const SizedBox(height: AppSizedBox.large),
+            SizedBoxWithHeight.large,
             // fat section
             Row(
               children: [
                 const Icon(Icons.water_drop, color: Colors.red),
-                const SizedBox(width: AppSizedBox.medium),
+                SizedBoxWithWidth.medium,
                 Text(
                   'Days Fat: $totalFat / ${goals.fat}',
-                  style: const TextStyle(fontSize: AppFont.large),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),
             Row(
               children: [
-                const SizedBox(width: AppSizedBox.xxLarge),
+                SizedBoxWithWidth.xxLarge,
                 Text(
                   'Remaining: $remainingFat',
-                  style: const TextStyle(fontSize: AppFont.medium),
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ],
             ),
-            const SizedBox(height: AppSizedBox.small),
+            SizedBoxWithHeight.small,
             ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
               child: LinearProgressIndicator(
@@ -146,28 +142,28 @@ class DailyStats extends StatelessWidget {
                 color: proteinProgress > 1 ? Colors.red : Colors.blue,
               ),
             ),
-            const SizedBox(height: AppSizedBox.large),
+            SizedBoxWithHeight.large,
             // carb section
             Row(
               children: [
                 const Icon(Icons.grass, color: Colors.yellow),
-                const SizedBox(width: AppSizedBox.medium),
+                SizedBoxWithWidth.medium,
                 Text(
                   'Days Carb: $totalCarb / ${goals.carb}',
-                  style: const TextStyle(fontSize: AppFont.large),
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
               ],
             ),
             Row(
               children: [
-                const SizedBox(width: AppSizedBox.xxLarge),
+                SizedBoxWithWidth.xxLarge,
                 Text(
                   'Remaining: $remainingCarb',
-                  style: const TextStyle(fontSize: AppFont.medium),
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ],
             ),
-            const SizedBox(height: AppSizedBox.small),
+            SizedBoxWithHeight.small,
             ClipRRect(
               borderRadius: BorderRadius.circular(16.0),
               child: LinearProgressIndicator(
@@ -177,7 +173,7 @@ class DailyStats extends StatelessWidget {
                 color: proteinProgress > 1 ? Colors.red : Colors.blue,
               ),
             ),
-            const SizedBox(height: AppSizedBox.medium),
+            SizedBoxWithHeight.medium,
           ],
         ),
       ),

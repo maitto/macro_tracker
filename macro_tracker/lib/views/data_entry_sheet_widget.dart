@@ -73,58 +73,21 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              const Text('Enter Details',
-                  style: TextStyle(fontSize: AppFont.xLarge)),
-              const SizedBox(height: AppSizedBox.medium),
-              TextFormField(
-                focusNode: _caloriesFocusNode,
-                controller: _caloriesController,
-                decoration: const InputDecoration(
-                  labelText: 'Calories',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
+              Text(
+                'Enter Details',
+                style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: AppSizedBox.medium),
-              TextFormField(
-                controller: _proteinController,
-                decoration: const InputDecoration(
-                  labelText: 'Protein',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-              ),
-              const SizedBox(height: AppSizedBox.medium),
-              TextFormField(
-                controller: _fatController,
-                decoration: const InputDecoration(
-                  labelText: 'Fat',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-              ),
-              const SizedBox(height: AppSizedBox.medium),
-              TextFormField(
-                controller: _carbController,
-                decoration: const InputDecoration(
-                  labelText: 'Carb',
-                  border: OutlineInputBorder(),
-                ),
-                keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-              ),
-              const SizedBox(height: AppSizedBox.medium),
+              SizedBoxWithHeight.medium,
+              CaloriesTextFormField(
+                  caloriesFocusNode: _caloriesFocusNode,
+                  caloriesController: _caloriesController),
+              SizedBoxWithHeight.medium,
+              ProteinTextFormField(proteinController: _proteinController),
+              SizedBoxWithHeight.medium,
+              FatTextFormField(fatController: _fatController),
+              SizedBoxWithHeight.medium,
+              CarbTextFormField(carbController: _carbController),
+              SizedBoxWithHeight.medium,
               SegmentedButton<String>(
                 segments: MealType.types,
                 selected: _selectedType,
@@ -134,7 +97,7 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
                   });
                 },
               ),
-              const SizedBox(height: AppSizedBox.large),
+              SizedBoxWithHeight.large,
               ElevatedButton(
                 onPressed: _saveData,
                 child: const Text('Save'),
@@ -143,6 +106,106 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class CarbTextFormField extends StatelessWidget {
+  const CarbTextFormField({
+    super.key,
+    required TextEditingController carbController,
+  }) : _carbController = carbController;
+
+  final TextEditingController _carbController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: _carbController,
+      decoration: const InputDecoration(
+        labelText: 'Carb',
+        border: OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+    );
+  }
+}
+
+class FatTextFormField extends StatelessWidget {
+  const FatTextFormField({
+    super.key,
+    required TextEditingController fatController,
+  }) : _fatController = fatController;
+
+  final TextEditingController _fatController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: _fatController,
+      decoration: const InputDecoration(
+        labelText: 'Fat',
+        border: OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+    );
+  }
+}
+
+class ProteinTextFormField extends StatelessWidget {
+  const ProteinTextFormField({
+    super.key,
+    required TextEditingController proteinController,
+  }) : _proteinController = proteinController;
+
+  final TextEditingController _proteinController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: _proteinController,
+      decoration: const InputDecoration(
+        labelText: 'Protein',
+        border: OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+    );
+  }
+}
+
+class CaloriesTextFormField extends StatelessWidget {
+  const CaloriesTextFormField({
+    super.key,
+    required FocusNode caloriesFocusNode,
+    required TextEditingController caloriesController,
+  })  : _caloriesFocusNode = caloriesFocusNode,
+        _caloriesController = caloriesController;
+
+  final FocusNode _caloriesFocusNode;
+  final TextEditingController _caloriesController;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      focusNode: _caloriesFocusNode,
+      controller: _caloriesController,
+      decoration: const InputDecoration(
+        labelText: 'Calories',
+        border: OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.digitsOnly,
+      ],
     );
   }
 }

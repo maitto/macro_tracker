@@ -1,3 +1,4 @@
+import 'package:macro_tracker/utils/size_contants.dart';
 import 'package:macro_tracker/view_models/home_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -39,12 +40,28 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.blue, brightness: Brightness.light),
           useMaterial3: true,
+          textTheme: TextTheme(
+            titleLarge: TextStyle(
+              fontSize: AppFont.xLarge,
+              fontWeight: FontWeight.bold,
+              color: ColorScheme.fromSeed(
+                      seedColor: Colors.blue, brightness: Brightness.light)
+                  .primary,
+            ),
+          ),
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           colorScheme: ColorScheme.fromSeed(
               seedColor: Colors.blue, brightness: Brightness.dark),
           useMaterial3: true,
+          textTheme: TextTheme(
+            titleLarge: TextStyle(
+              fontSize: AppFont.xLarge,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
         ),
         themeMode: ThemeMode.system, // Use system theme mode (light/dark)
         home: const HomePage(title: 'Simple Macro Tracker'),

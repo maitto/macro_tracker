@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
+
 class AppSpacing {
   static const double medium = 16;
-    static const double large = 32;
+  static const double large = 32;
 }
 
 class AppFont {
@@ -10,10 +12,18 @@ class AppFont {
   static const double xLarge = 20;
 }
 
-class AppSizedBox {
-  static const double small = 5;
-  static const double medium = 10;
-  static const double large = 15;
-  static const double xLarge = 20;
-  static const double xxLarge = 34;
+class SizedBoxWithWidth {
+  static const SizedBox small = SizedBox(width: 5);
+  static const SizedBox medium = SizedBox(width: 10);
+  static const SizedBox large = SizedBox(width: 15);
+  static const SizedBox xLarge = SizedBox(width: 20);
+  static const SizedBox xxLarge = SizedBox(width: 34);
+}
+
+class SizedBoxWithHeight {
+  static const SizedBox small = SizedBox(height: 5);
+  static const SizedBox medium = SizedBox(height: 10);
+  static const SizedBox large = SizedBox(height: 15);
+  static const SizedBox xLarge = SizedBox(height: 20);
+  static const SizedBox xxLarge = SizedBox(height: 34);
 }
