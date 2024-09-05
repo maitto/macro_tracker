@@ -12,4 +12,4 @@ samples, guidance on mobile development, and a full API reference.
 
 ## App structure
 
-App uses MVVM architecutre. Provider is used for state management. Firebase is used for analytics. Flutter_lints is used for linting. Mockito is used for testing.
+App uses MVVM architecture. Provider is used for state management. Firebase is used for analytics. Flutter_lints is used for linting. Mockito is used for testing.
