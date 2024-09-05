@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../models/data_entry.dart';
 import '../models/goals.dart';
 import '../utils/size_contants.dart';
-import 'package:flutter/material.dart';
-import '../models/data_entry.dart';
-import 'package:intl/intl.dart';
 
 class DailyStats extends StatelessWidget {
   final List<DataEntry> entries;
@@ -24,18 +25,18 @@ class DailyStats extends StatelessWidget {
       totalCarb = entry.carb;
     }
 
-    int remainingCalories = goals.calorie - totalCalories;
-    int remainingProtein = goals.protein - totalProtein;
-    int remainingFat = goals.fat - totalFat;
-    int remainingCarb = goals.carb - totalCarb;
+    final int remainingCalories = goals.calorie - totalCalories;
+    final int remainingProtein = goals.protein - totalProtein;
+    final int remainingFat = goals.fat - totalFat;
+    final int remainingCarb = goals.carb - totalCarb;
 
     final double calorieProgress =
         (goals.calorie > 0) ? totalCalories / goals.calorie : 0.0;
     final double proteinProgress =
         (goals.protein > 0) ? totalProtein / goals.protein : 0.0;
 
-    Locale locale = Localizations.localeOf(context);
-    DateFormat dateFormat = DateFormat.MEd(locale.toString());
+    final Locale locale = Localizations.localeOf(context);
+    final DateFormat dateFormat = DateFormat.MEd(locale.toString());
     final formattedDate = dateFormat.format(entries.first.date);
 
     return Card(

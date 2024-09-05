@@ -1,15 +1,15 @@
-import 'package:macro_tracker/models/meal_type.dart';
-
-import '../view_models/home_page_view_model.dart';
-import '../utils/size_contants.dart';
 import 'package:flutter/material.dart';
-import '../models/data_entry.dart';
 import 'package:intl/intl.dart';
+import 'package:macro_tracker/models/meal_type.dart';
 import 'package:provider/provider.dart';
+
+import '../models/data_entry.dart';
+import '../utils/size_contants.dart';
+import '../view_models/home_page_view_model.dart';
+import 'daily_stats_widget.dart';
+import 'data_entry_sheet_widget.dart';
 import 'settings_page_widget.dart';
 import 'weekly_stats_page_widget.dart';
-import 'data_entry_sheet_widget.dart';
-import 'daily_stats_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key, required this.title});
@@ -147,16 +147,16 @@ class HomePage extends StatelessWidget {
           entries.where((e) => e.type == mealType).toList();
     }
 
-    List<Widget> entryWidgets = [];
+    final List<Widget> entryWidgets = [];
     for (var mealType in MealType.types) {
       if (entriesByMealType[mealType]!.isNotEmpty) {
-        int totalCalories = entriesByMealType[mealType]!
+        final int totalCalories = entriesByMealType[mealType]!
             .fold(0, (sum, entry) => sum + entry.calories);
-        int totalProtein = entriesByMealType[mealType]!
+        final int totalProtein = entriesByMealType[mealType]!
             .fold(0, (sum, entry) => sum + entry.protein);
-        int totalFat = entriesByMealType[mealType]!
+        final int totalFat = entriesByMealType[mealType]!
             .fold(0, (sum, entry) => sum + entry.fat);
-        int totalCarb = entriesByMealType[mealType]!
+        final int totalCarb = entriesByMealType[mealType]!
             .fold(0, (sum, entry) => sum + entry.carb);
 
         entryWidgets.add(
@@ -214,8 +214,8 @@ class HomePage extends StatelessWidget {
         );
 
         entryWidgets.addAll(entriesByMealType[mealType]!.map((entry) {
-          Locale locale = Localizations.localeOf(context);
-          DateFormat dateFormat = DateFormat.Hm(locale.toString());
+          final Locale locale = Localizations.localeOf(context);
+          final DateFormat dateFormat = DateFormat.Hm(locale.toString());
           final formattedTime = dateFormat.format(entry.date);
           final entryIndex = viewModel.entries.indexOf(entry);
 

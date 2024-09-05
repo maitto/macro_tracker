@@ -1,10 +1,11 @@
-import 'package:macro_tracker/view_models/home_page_view_model.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:macro_tracker/view_models/home_page_view_model.dart';
 import 'package:provider/provider.dart';
-import 'views/home_page_widget.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'firebase_options.dart';
+import 'views/home_page_widget.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

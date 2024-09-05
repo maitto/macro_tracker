@@ -1,9 +1,11 @@
-import 'package:macro_tracker/models/goals.dart';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../models/data_entry.dart';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/material.dart';
+import 'package:macro_tracker/models/goals.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/data_entry.dart';
 
 enum SharedPreferencesKeys {
   calorieGoal,

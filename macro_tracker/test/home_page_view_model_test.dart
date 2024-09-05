@@ -1,12 +1,14 @@
+import 'dart:convert';
+
+import 'package:flutter_test/flutter_test.dart';
 import 'package:macro_tracker/models/data_entry.dart';
 import 'package:macro_tracker/models/goals.dart';
 import 'package:macro_tracker/models/meal_type.dart';
 import 'package:macro_tracker/view_models/home_page_view_model.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
-import 'dart:convert';
+import 'package:mockito/mockito.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'mock_shared_preferences.dart';
 
 @GenerateMocks([SharedPreferences])

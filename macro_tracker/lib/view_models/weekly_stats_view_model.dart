@@ -3,7 +3,7 @@ import '../models/data_entry.dart';
 
 class WeeklyStatsViewModel {
   List<WeeklyStat> getWeeklyStats(List<DataEntry> entries) {
-    List<WeeklyStat> weeklyStats = [];
+    final List<WeeklyStat> weeklyStats = [];
     if (entries.isEmpty) return [];
 
     final sortedEntries = entries.toList()
@@ -35,7 +35,7 @@ class WeeklyStatsViewModel {
     int totalProtein = 0;
     int totalFat = 0;
     int totalCarb = 0;
-    List<int> numberOfWeekDaysWithData = [];
+    final List<int> numberOfWeekDaysWithData = [];
 
     for (var entry in entries) {
       totalCalories += entry.calories;

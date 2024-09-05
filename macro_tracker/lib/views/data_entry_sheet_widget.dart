@@ -1,7 +1,8 @@
-import 'package:macro_tracker/models/data_entry.dart';
-import 'package:macro_tracker/models/meal_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:macro_tracker/models/data_entry.dart';
+import 'package:macro_tracker/models/meal_type.dart';
+
 import '../utils/size_contants.dart';
 
 class DataEntrySheetContent extends StatefulWidget {

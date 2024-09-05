@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:macro_tracker/models/goals.dart';
 
 import '../utils/size_contants.dart';
-import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
   final Goals goals;

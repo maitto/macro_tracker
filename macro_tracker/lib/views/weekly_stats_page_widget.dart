@@ -1,7 +1,8 @@
-import 'package:macro_tracker/view_models/weekly_stats_view_model.dart';
 import 'package:flutter/material.dart';
-import '../models/data_entry.dart';
 import 'package:intl/intl.dart';
+import 'package:macro_tracker/view_models/weekly_stats_view_model.dart';
+
+import '../models/data_entry.dart';
 import '../utils/size_contants.dart';
 
 class WeeklyStatsPage extends StatelessWidget {

@@ -1,21 +1,21 @@
+import 'package:macro_tracker/models/data_entry.dart';
 import 'package:macro_tracker/models/meal_type.dart';
-import 'package:test/test.dart';
 import 'package:macro_tracker/models/weekly_stat.dart';
 import 'package:macro_tracker/view_models/weekly_stats_view_model.dart';
-import 'package:macro_tracker/models/data_entry.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('WeeklyStatsViewModel', () {
     final viewModel = WeeklyStatsViewModel();
 
     test('getWeeklyStats returns empty list for no entries', () {
-      List<DataEntry> entries = [];
-      List<WeeklyStat> result = viewModel.getWeeklyStats(entries);
+      final List<DataEntry> entries = [];
+      final List<WeeklyStat> result = viewModel.getWeeklyStats(entries);
       expect(result, isEmpty);
     });
 
     test('getWeeklyStats calculates correct stats for one week of entries', () {
-      List<DataEntry> entries = [
+      final List<DataEntry> entries = [
         DataEntry(
             date: DateTime(2023, 7, 3),
             calories: 2000,
@@ -52,7 +52,7 @@ void main() {
             carb: 20,
             type: MealType.types.first,),
       ];
-      List<WeeklyStat> result = viewModel.getWeeklyStats(entries);
+      final List<WeeklyStat> result = viewModel.getWeeklyStats(entries);
       expect(result.length, 1);
       expect(result[0].startDate, DateTime(2023, 7, 3));
       expect(result[0].endDate, DateTime(2023, 7, 9, 23, 59, 59, 999));
@@ -65,7 +65,7 @@ void main() {
     });
 
     test('getWeeklyStats splits entries correctly across weeks', () {
-      List<DataEntry> entries = [
+      final List<DataEntry> entries = [
         DataEntry(
             date: DateTime(2023, 7, 3),
             calories: 2000,
@@ -95,7 +95,7 @@ void main() {
             carb: 10,
             type: MealType.types.first,),
       ];
-      List<WeeklyStat> result = viewModel.getWeeklyStats(entries);
+      final List<WeeklyStat> result = viewModel.getWeeklyStats(entries);
       expect(result.length, 2);
 
       // First week stats
