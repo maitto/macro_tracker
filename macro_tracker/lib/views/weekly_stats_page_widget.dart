@@ -23,9 +23,9 @@ class WeeklyStatsPage extends StatelessWidget {
             final weekStats = weeklyStats[index];
 
             return Card(
-              margin: const EdgeInsets.all(AppSpacing.medium),
+              margin: EdgeInsetsAll.medium,
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.medium),
+                padding: EdgeInsetsAll.medium,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -46,7 +46,7 @@ class WeeklyStatsPage extends StatelessWidget {
                     Row(
                       children: [
                         const Icon(Icons.local_fire_department,
-                            color: Colors.orange),
+                            color: Colors.orange,),
                         SizedBoxWithWidth.medium,
                         Text(
                           'Average Daily Calories: ${weekStats.averageCalories}',
@@ -104,7 +104,7 @@ class WeeklyStatsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.all(AppSpacing.large),
+              padding: EdgeInsetsAll.large,
               child: Center(
                 child: Text(
                   'Nothing here yet',

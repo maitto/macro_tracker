@@ -14,7 +14,6 @@ class DataEntrySheetContent extends StatefulWidget {
 }
 
 class DataEntrySheetState extends State<DataEntrySheetContent> {
-  final FocusNode _caloriesFocusNode = FocusNode();
   final TextEditingController _caloriesController =
       TextEditingController(text: '');
   final TextEditingController _proteinController =
@@ -26,16 +25,14 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _caloriesFocusNode.requestFocus();
-    });
   }
 
   @override
   void dispose() {
-    _caloriesFocusNode.dispose();
     _caloriesController.dispose();
     _proteinController.dispose();
+    _fatController.dispose();
+    _carbController.dispose();
     super.dispose();
   }
 
@@ -53,7 +50,7 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
           protein: protein,
           fat: fat,
           carb: carb,
-          type: _selectedType);
+          type: _selectedType,);
       widget.onSave(entry);
       Navigator.of(context).pop();
       HapticFeedback.lightImpact();
@@ -68,8 +65,7 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
       ),
       child: IntrinsicHeight(
         child: Padding(
-          padding: const EdgeInsets.all(
-              AppSpacing.medium), // Add padding to all sides
+          padding: EdgeInsetsAll.medium,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -78,9 +74,7 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               SizedBoxWithHeight.medium,
-              CaloriesTextFormField(
-                  caloriesFocusNode: _caloriesFocusNode,
-                  caloriesController: _caloriesController),
+              CaloriesTextFormField(caloriesController: _caloriesController),
               SizedBoxWithHeight.medium,
               ProteinTextFormField(proteinController: _proteinController),
               SizedBoxWithHeight.medium,
@@ -185,18 +179,15 @@ class ProteinTextFormField extends StatelessWidget {
 class CaloriesTextFormField extends StatelessWidget {
   const CaloriesTextFormField({
     super.key,
-    required FocusNode caloriesFocusNode,
     required TextEditingController caloriesController,
-  })  : _caloriesFocusNode = caloriesFocusNode,
-        _caloriesController = caloriesController;
+  }) : _caloriesController = caloriesController;
 
-  final FocusNode _caloriesFocusNode;
   final TextEditingController _caloriesController;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      focusNode: _caloriesFocusNode,
+      autofocus: true,
       controller: _caloriesController,
       decoration: const InputDecoration(
         labelText: 'Calories',
@@ -234,7 +225,7 @@ class SegmentedButton<T> extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: AppSpacing.medium),
                 child: Text(segment.toString()),
-              ))
+              ),)
           .toList(),
     );
   }

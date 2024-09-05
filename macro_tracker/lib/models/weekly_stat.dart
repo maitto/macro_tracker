@@ -14,5 +14,5 @@ class WeeklyStat {
       required this.averageCalories,
       required this.averageProtein,
       required this.averageFat,
-      required this.averageCarb});
+      required this.averageCarb,});
 }

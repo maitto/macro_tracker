@@ -1,4 +1,3 @@
-import 'package:macro_tracker/utils/size_contants.dart';
 import 'package:macro_tracker/view_models/home_page_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -38,14 +37,14 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.blue, brightness: Brightness.light),
+              seedColor: Colors.blue, brightness: Brightness.light,),
           useMaterial3: true,
           textTheme: TextTheme(
             titleLarge: TextStyle(
-              fontSize: AppFont.xLarge,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: ColorScheme.fromSeed(
-                      seedColor: Colors.blue, brightness: Brightness.light)
+                      seedColor: Colors.blue, brightness: Brightness.light,)
                   .primary,
             ),
           ),
@@ -53,13 +52,15 @@ class MyApp extends StatelessWidget {
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.blue, brightness: Brightness.dark),
+              seedColor: Colors.blue, brightness: Brightness.dark,),
           useMaterial3: true,
           textTheme: TextTheme(
             titleLarge: TextStyle(
-              fontSize: AppFont.xLarge,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
+              color: ColorScheme.fromSeed(
+                      seedColor: Colors.blue, brightness: Brightness.light,)
+                  .primary,
             ),
           ),
         ),

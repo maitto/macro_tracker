@@ -74,11 +74,11 @@ class HomePage extends StatelessWidget {
                         goals: viewModel.goals,
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(AppSpacing.medium),
+                        padding: EdgeInsetsAll.medium,
                         child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: _buildEntriesByMealType(
-                                entriesForDate, context, viewModel)),
+                                entriesForDate, context, viewModel,),),
                       ),
                     ],
                   ),
@@ -90,7 +90,7 @@ class HomePage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(AppSpacing.large),
+                  padding: EdgeInsetsAll.large,
                   child: Text(
                     'Add your goals from the settings icon',
                     textAlign: TextAlign.center,
@@ -99,7 +99,7 @@ class HomePage extends StatelessWidget {
                 ),
                 SizedBoxWithHeight.xxLarge,
                 Padding(
-                  padding: const EdgeInsets.all(AppSpacing.large),
+                  padding: EdgeInsetsAll.large,
                   child: Text(
                     'Add entries by tapping the "+" button',
                     textAlign: TextAlign.center,
@@ -139,7 +139,7 @@ class HomePage extends StatelessWidget {
   }
 
   List<Widget> _buildEntriesByMealType(List<DataEntry> entries,
-      BuildContext context, HomePageViewModel viewModel) {
+      BuildContext context, HomePageViewModel viewModel,) {
     final Map<String, List<DataEntry>> entriesByMealType = {};
 
     for (var mealType in MealType.types) {
@@ -234,7 +234,7 @@ class HomePage extends StatelessWidget {
                 Row(
                   children: [
                     const Icon(Icons.local_fire_department,
-                        color: Colors.orange),
+                        color: Colors.orange,),
                     SizedBoxWithWidth.medium,
                     SizedBox(
                       width: 130.0,
@@ -275,7 +275,7 @@ class HomePage extends StatelessWidget {
               ],
             ),
           );
-        }).toList());
+        }).toList(),);
       }
     }
 
@@ -283,7 +283,7 @@ class HomePage extends StatelessWidget {
   }
 
   void _showDeleteMenu(
-      BuildContext context, int entryIndex, HomePageViewModel viewModel) {
+      BuildContext context, int entryIndex, HomePageViewModel viewModel,) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {

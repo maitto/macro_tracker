@@ -5,13 +5,6 @@ class AppSpacing {
   static const double large = 32;
 }
 
-class AppFont {
-  static const double small = 14;
-  static const double medium = 16;
-  static const double large = 18;
-  static const double xLarge = 20;
-}
-
 class SizedBoxWithWidth {
   static const SizedBox small = SizedBox(width: 5);
   static const SizedBox medium = SizedBox(width: 10);
@@ -26,4 +19,9 @@ class SizedBoxWithHeight {
   static const SizedBox large = SizedBox(height: 15);
   static const SizedBox xLarge = SizedBox(height: 20);
   static const SizedBox xxLarge = SizedBox(height: 34);
+}
+
+class EdgeInsetsAll {
+  static const EdgeInsets medium = EdgeInsets.all(AppSpacing.medium);
+  static const EdgeInsets large = EdgeInsets.all(AppSpacing.large);
 }

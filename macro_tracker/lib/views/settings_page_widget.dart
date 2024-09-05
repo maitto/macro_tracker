@@ -8,7 +8,7 @@ class SettingsPage extends StatefulWidget {
   final Function(Goals) onGoalsChanged;
 
   const SettingsPage(
-      {super.key, required this.goals, required this.onGoalsChanged});
+      {super.key, required this.goals, required this.onGoalsChanged,});
 
   @override
   SettingsPageState createState() => SettingsPageState();
@@ -45,7 +45,7 @@ class SettingsPageState extends State<SettingsPage> {
         calorie: calorieGoal,
         protein: proteinGoal,
         fat: fatGoal,
-        carb: carbGoal);
+        carb: carbGoal,);
 
     widget.onGoalsChanged(goals);
     Navigator.of(context).pop();
@@ -67,7 +67,7 @@ class SettingsPageState extends State<SettingsPage> {
         title: const Text('Settings'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(AppSpacing.medium),
+        padding: EdgeInsetsAll.medium,
         child: Column(
           children: [
             TextField(

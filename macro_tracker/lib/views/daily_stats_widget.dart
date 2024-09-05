@@ -39,9 +39,9 @@ class DailyStats extends StatelessWidget {
     final formattedDate = dateFormat.format(entries.first.date);
 
     return Card(
-      margin: const EdgeInsets.all(AppSpacing.medium),
+      margin: EdgeInsetsAll.medium,
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.medium),
+        padding: EdgeInsetsAll.medium,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

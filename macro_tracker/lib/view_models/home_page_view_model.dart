@@ -113,7 +113,7 @@ class HomePageViewModel extends ChangeNotifier {
         .where((e) =>
             e.date.year == date.year &&
             e.date.month == date.month &&
-            e.date.day == date.day)
+            e.date.day == date.day,)
         .toList();
   }
 }

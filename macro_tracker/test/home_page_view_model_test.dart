@@ -107,7 +107,7 @@ void main() {
           'date': DateTime.now().toIso8601String(),
           'calories': 500,
           'protein': 30,
-          'type': 'Lunch'
+          'type': 'Lunch',
         }
       ]);
 
@@ -140,7 +140,7 @@ void main() {
           protein: 40,
           fat: 30,
           carb: 20,
-          type: MealType.types.first);
+          type: MealType.types.first,);
       await viewModel.saveEntry(entry);
 
       expect(viewModel.entries.length, 1);
@@ -156,7 +156,7 @@ void main() {
           'date': DateTime.now().toIso8601String(),
           'calories': 500,
           'protein': 30,
-          'type': 'Meal'
+          'type': 'Meal',
         }
       ]);
 
@@ -186,13 +186,13 @@ void main() {
           'date': now.toIso8601String(),
           'calories': 500,
           'protein': 30,
-          'type': 'Lunch'
+          'type': 'Lunch',
         },
         {
           'date': now.subtract(const Duration(days: 1)).toIso8601String(),
           'calories': 600,
           'protein': 40,
-          'type': 'Snack'
+          'type': 'Snack',
         }
       ]);
 

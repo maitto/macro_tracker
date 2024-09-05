@@ -12,7 +12,7 @@ class DataEntry {
       required this.protein,
       required this.fat,
       required this.carb,
-      required this.type});
+      required this.type,});
 
   Map<String, dynamic> toJson() => {
         'date': date.toIso8601String(),
@@ -28,7 +28,7 @@ class DataEntry {
       calories: json['calories'] ?? 0,
       protein: json['protein'] ?? 0,
       fat: json['fat'] ?? 0,
-      carb: json['carb'] ?? 0
+      carb: json['carb'] ?? 0,
     );
   }
 }

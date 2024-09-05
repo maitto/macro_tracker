@@ -8,5 +8,5 @@ class Goals {
       {required this.calorie,
       required this.protein,
       required this.fat,
-      required this.carb});
+      required this.carb,});
 }

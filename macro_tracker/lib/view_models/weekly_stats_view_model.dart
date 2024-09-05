@@ -15,7 +15,7 @@ class WeeklyStatsViewModel {
     for (var entry in sortedEntries) {
       if (entry.date.isAfter(endOfWeek)) {
         weeklyStats.add(
-            _getWeeklyStatFromEntries(startOfWeek, endOfWeek, entriesForWeek));
+            _getWeeklyStatFromEntries(startOfWeek, endOfWeek, entriesForWeek),);
         entriesForWeek = [];
         startOfWeek = _getStartOfWeek(entry.date);
         endOfWeek = _getEndOfWeek(entry.date);
@@ -30,7 +30,7 @@ class WeeklyStatsViewModel {
   }
 
   WeeklyStat _getWeeklyStatFromEntries(
-      DateTime weekStartDate, DateTime weekEndDate, List<DataEntry> entries) {
+      DateTime weekStartDate, DateTime weekEndDate, List<DataEntry> entries,) {
     int totalCalories = 0;
     int totalProtein = 0;
     int totalFat = 0;
@@ -56,7 +56,7 @@ class WeeklyStatsViewModel {
         averageProtein:
             (totalProtein / numberOfWeekDaysWithData.length).round(),
         averageFat: (totalFat / numberOfWeekDaysWithData.length).round(),
-        averageCarb: (totalCarb / numberOfWeekDaysWithData.length).round());
+        averageCarb: (totalCarb / numberOfWeekDaysWithData.length).round(),);
   }
 
   DateTime _getStartOfWeek(DateTime date) {
