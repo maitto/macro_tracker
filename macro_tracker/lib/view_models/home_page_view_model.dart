@@ -26,41 +26,52 @@ class HomePageViewModel extends ChangeNotifier {
   List<DateTime> _uniqueDates = [];
   Goals _goals = Goals(calorie: 0, protein: 0, fat: 0, carb: 0);
   late PageController _pageController;
-  late SharedPreferences prefs;
+  SharedPreferences? _prefs;
+  FirebaseAnalytics? analytics;
+
+  HomePageViewModel([SharedPreferences? mockSharedPreferences]) {
+    _prefs = mockSharedPreferences;
+    // mocked SharedPreferences indicate tests, so FirebaseAnalytics should only be initialized when mockSharedPreferences is null
+    if (mockSharedPreferences == null) {
+      analytics = FirebaseAnalytics.instance;
+    }
+  }
 
   Future<void> init() async {
-    prefs = await SharedPreferences.getInstance();
+    _prefs ??= await SharedPreferences.getInstance();
     _pageController = PageController(initialPage: 0);
     _loadEntries();
     _loadGoals();
   }
 
   Future<void> _loadGoals() async {
-    _goals.calorie = prefs.getInt(SharedPreferencesKeys.calorieGoal.name) ?? 0;
-    _goals.protein = prefs.getInt(SharedPreferencesKeys.proteinGoal.name) ?? 0;
-    _goals.fat = prefs.getInt(SharedPreferencesKeys.fatGoal.name) ?? 0;
-    _goals.carb = prefs.getInt(SharedPreferencesKeys.carbGoal.name) ?? 0;
+    _goals.calorie =
+        _prefs?.getInt(SharedPreferencesKeys.calorieGoal.name) ?? 0;
+    _goals.protein =
+        _prefs?.getInt(SharedPreferencesKeys.proteinGoal.name) ?? 0;
+    _goals.fat = _prefs?.getInt(SharedPreferencesKeys.fatGoal.name) ?? 0;
+    _goals.carb = _prefs?.getInt(SharedPreferencesKeys.carbGoal.name) ?? 0;
 
     notifyListeners();
 
-    await FirebaseAnalytics.instance.logEvent(name: "loadGoals");
+    await analytics?.logEvent(name: "loadGoals");
   }
 
   void updateGoals(Goals goals) async {
     _goals = goals;
-    prefs.setInt(SharedPreferencesKeys.calorieGoal.name, goals.calorie);
-    prefs.setInt(SharedPreferencesKeys.proteinGoal.name, goals.protein);
-    prefs.setInt(SharedPreferencesKeys.fatGoal.name, goals.fat);
-    prefs.setInt(SharedPreferencesKeys.carbGoal.name, goals.carb);
+    _prefs?.setInt(SharedPreferencesKeys.calorieGoal.name, goals.calorie);
+    _prefs?.setInt(SharedPreferencesKeys.proteinGoal.name, goals.protein);
+    _prefs?.setInt(SharedPreferencesKeys.fatGoal.name, goals.fat);
+    _prefs?.setInt(SharedPreferencesKeys.carbGoal.name, goals.carb);
 
     notifyListeners();
 
-    await FirebaseAnalytics.instance.logEvent(name: "updateGoals");
+    await analytics?.logEvent(name: "updateGoals");
   }
 
   Future<void> _loadEntries() async {
     final String? dataString =
-        prefs.getString(SharedPreferencesKeys.dataEntries.name);
+        _prefs?.getString(SharedPreferencesKeys.dataEntries.name);
     if (dataString != null) {
       final List<dynamic> dataJson = jsonDecode(dataString);
       _entries = dataJson.map((json) => DataEntry.fromJson(json)).toList();
@@ -72,7 +83,7 @@ class HomePageViewModel extends ChangeNotifier {
       _uniqueDates.sort((a, b) => b.compareTo(a));
       notifyListeners();
 
-      await FirebaseAnalytics.instance.logEvent(name: "_loadEntries");
+      await analytics?.logEvent(name: "_loadEntries");
     }
   }
 
@@ -87,10 +98,10 @@ class HomePageViewModel extends ChangeNotifier {
 
     final String dataString =
         jsonEncode(_entries.map((entry) => entry.toJson()).toList());
-    await prefs.setString(SharedPreferencesKeys.dataEntries.name, dataString);
+    await _prefs?.setString(SharedPreferencesKeys.dataEntries.name, dataString);
     notifyListeners();
 
-    await FirebaseAnalytics.instance.logEvent(name: "saveEntry");
+    await analytics?.logEvent(name: "saveEntry");
   }
 
   Future<void> deleteEntry(int entryIndex) async {
@@ -104,18 +115,20 @@ class HomePageViewModel extends ChangeNotifier {
 
     final String dataString =
         jsonEncode(_entries.map((entry) => entry.toJson()).toList());
-    await prefs.setString(SharedPreferencesKeys.dataEntries.name, dataString);
+    await _prefs?.setString(SharedPreferencesKeys.dataEntries.name, dataString);
     notifyListeners();
 
-    await FirebaseAnalytics.instance.logEvent(name: "deleteEntry");
+    await analytics?.logEvent(name: "deleteEntry");
   }
 
   List<DataEntry> entriesForDate(DateTime date) {
     return _entries
-        .where((e) =>
-            e.date.year == date.year &&
-            e.date.month == date.month &&
-            e.date.day == date.day,)
+        .where(
+          (e) =>
+              e.date.year == date.year &&
+              e.date.month == date.month &&
+              e.date.day == date.day,
+        )
         .toList();
   }
 }

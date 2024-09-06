@@ -21,8 +21,7 @@ void main() {
 
     setUp(() {
       mockPrefs = MockSharedPreferences();
-      viewModel = HomePageViewModel();
-      viewModel.prefs = mockPrefs;
+      viewModel = HomePageViewModel(mockPrefs);
     });
 
     test('initializes with default values', () {
@@ -137,12 +136,13 @@ void main() {
       viewModel.init();
 
       final entry = DataEntry(
-          date: DateTime.now(),
-          calories: 600,
-          protein: 40,
-          fat: 30,
-          carb: 20,
-          type: MealType.types.first,);
+        date: DateTime.now(),
+        calories: 600,
+        protein: 40,
+        fat: 30,
+        carb: 20,
+        type: MealType.types.first,
+      );
       await viewModel.saveEntry(entry);
 
       expect(viewModel.entries.length, 1);
