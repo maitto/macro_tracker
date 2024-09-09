@@ -19,8 +19,8 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
       TextEditingController(text: '');
   final TextEditingController _proteinController =
       TextEditingController(text: '');
-  final TextEditingController _fatController = TextEditingController(text: '');
-  final TextEditingController _carbController = TextEditingController(text: '');
+  final TextEditingController _fatController = TextEditingController();
+  final TextEditingController _carbController = TextEditingController();
   String _selectedType = MealType.types.first;
 
   @override
@@ -46,12 +46,13 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
     if (!(calories == 0 && protein == 0 && fat == 0 && carb == 0)) {
       final now = DateTime.now();
       final entry = DataEntry(
-          date: now,
-          calories: calories,
-          protein: protein,
-          fat: fat,
-          carb: carb,
-          type: _selectedType,);
+        date: now,
+        calories: calories,
+        protein: protein,
+        fat: fat,
+        carb: carb,
+        type: _selectedType,
+      );
       widget.onSave(entry);
       Navigator.of(context).pop();
       HapticFeedback.lightImpact();
@@ -75,13 +76,26 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               SizedBoxWithHeight.medium,
-              CaloriesTextFormField(caloriesController: _caloriesController),
+              DataEntryTextFormField(
+                controller: _caloriesController,
+                labelText: 'Calories',
+                autofocus: true,
+              ),
               SizedBoxWithHeight.medium,
-              ProteinTextFormField(proteinController: _proteinController),
+              DataEntryTextFormField(
+                controller: _proteinController,
+                labelText: 'Protein',
+              ),
               SizedBoxWithHeight.medium,
-              FatTextFormField(fatController: _fatController),
+              DataEntryTextFormField(
+                controller: _fatController,
+                labelText: 'Fat',
+              ),
               SizedBoxWithHeight.medium,
-              CarbTextFormField(carbController: _carbController),
+              DataEntryTextFormField(
+                controller: _carbController,
+                labelText: 'Carb',
+              ),
               SizedBoxWithHeight.medium,
               SegmentedButton<String>(
                 segments: MealType.types,
@@ -105,94 +119,26 @@ class DataEntrySheetState extends State<DataEntrySheetContent> {
   }
 }
 
-class CarbTextFormField extends StatelessWidget {
-  const CarbTextFormField({
+class DataEntryTextFormField extends StatelessWidget {
+  const DataEntryTextFormField({
     super.key,
-    required TextEditingController carbController,
-  }) : _carbController = carbController;
+    required this.controller,
+    required this.labelText,
+    this.autofocus = false,
+  });
 
-  final TextEditingController _carbController;
+  final TextEditingController controller;
+  final String labelText;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: _carbController,
-      decoration: const InputDecoration(
-        labelText: 'Carb',
-        border: OutlineInputBorder(),
-      ),
-      keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly,
-      ],
-    );
-  }
-}
-
-class FatTextFormField extends StatelessWidget {
-  const FatTextFormField({
-    super.key,
-    required TextEditingController fatController,
-  }) : _fatController = fatController;
-
-  final TextEditingController _fatController;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _fatController,
-      decoration: const InputDecoration(
-        labelText: 'Fat',
-        border: OutlineInputBorder(),
-      ),
-      keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly,
-      ],
-    );
-  }
-}
-
-class ProteinTextFormField extends StatelessWidget {
-  const ProteinTextFormField({
-    super.key,
-    required TextEditingController proteinController,
-  }) : _proteinController = proteinController;
-
-  final TextEditingController _proteinController;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _proteinController,
-      decoration: const InputDecoration(
-        labelText: 'Protein',
-        border: OutlineInputBorder(),
-      ),
-      keyboardType: TextInputType.number,
-      inputFormatters: <TextInputFormatter>[
-        FilteringTextInputFormatter.digitsOnly,
-      ],
-    );
-  }
-}
-
-class CaloriesTextFormField extends StatelessWidget {
-  const CaloriesTextFormField({
-    super.key,
-    required TextEditingController caloriesController,
-  }) : _caloriesController = caloriesController;
-
-  final TextEditingController _caloriesController;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      autofocus: true,
-      controller: _caloriesController,
-      decoration: const InputDecoration(
-        labelText: 'Calories',
-        border: OutlineInputBorder(),
+      autofocus: autofocus,
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        border: const OutlineInputBorder(),
       ),
       keyboardType: TextInputType.number,
       inputFormatters: <TextInputFormatter>[
@@ -222,11 +168,13 @@ class SegmentedButton<T> extends StatelessWidget {
         onSelectionChanged(segments[index]);
       },
       children: segments
-          .map((T segment) => Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppSpacing.medium),
-                child: Text(segment.toString()),
-              ),)
+          .map(
+            (T segment) => Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppSpacing.medium),
+              child: Text(segment.toString()),
+            ),
+          )
           .toList(),
     );
   }
