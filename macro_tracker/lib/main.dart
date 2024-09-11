@@ -38,30 +38,36 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.blue, brightness: Brightness.light,),
+            seedColor: Colors.blue,
+            brightness: Brightness.light,
+          ),
           useMaterial3: true,
           textTheme: TextTheme(
             titleLarge: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: ColorScheme.fromSeed(
-                      seedColor: Colors.blue, brightness: Brightness.light,)
-                  .primary,
+                seedColor: Colors.blue,
+                brightness: Brightness.light,
+              ).primary,
             ),
           ),
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.blue, brightness: Brightness.dark,),
+            seedColor: Colors.blue,
+            brightness: Brightness.dark,
+          ),
           useMaterial3: true,
           textTheme: TextTheme(
             titleLarge: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: ColorScheme.fromSeed(
-                      seedColor: Colors.blue, brightness: Brightness.light,)
-                  .primary,
+                seedColor: Colors.blue,
+                brightness: Brightness.dark,
+              ).primary,
             ),
           ),
         ),
