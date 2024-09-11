@@ -76,9 +76,13 @@ class HomePage extends StatelessWidget {
                       Padding(
                         padding: EdgeInsetsAll.medium,
                         child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: _buildEntriesByMealType(
-                                entriesForDate, context, viewModel,),),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: _buildEntriesByMealType(
+                            entriesForDate,
+                            context,
+                            viewModel,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -86,27 +90,29 @@ class HomePage extends StatelessWidget {
               },
             );
           } else {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsetsAll.large,
-                  child: Text(
-                    'Add your goals from the settings icon',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge,
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsAll.large,
+                    child: Text(
+                      'Add your goals from the settings icon',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                   ),
-                ),
-                SizedBoxWithHeight.xxLarge,
-                Padding(
-                  padding: EdgeInsetsAll.large,
-                  child: Text(
-                    'Add entries by tapping the "+" button',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge,
+                  SizedBoxWithHeight.xxLarge,
+                  Padding(
+                    padding: EdgeInsetsAll.large,
+                    child: Text(
+                      'Add entries by tapping the "+" button',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           }
         },
@@ -138,8 +144,11 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildEntriesByMealType(List<DataEntry> entries,
-      BuildContext context, HomePageViewModel viewModel,) {
+  List<Widget> _buildEntriesByMealType(
+    List<DataEntry> entries,
+    BuildContext context,
+    HomePageViewModel viewModel,
+  ) {
     final Map<String, List<DataEntry>> entriesByMealType = {};
 
     for (var mealType in MealType.types) {
@@ -213,69 +222,74 @@ class HomePage extends StatelessWidget {
           ),
         );
 
-        entryWidgets.addAll(entriesByMealType[mealType]!.map((entry) {
-          final Locale locale = Localizations.localeOf(context);
-          final DateFormat dateFormat = DateFormat.Hm(locale.toString());
-          final formattedTime = dateFormat.format(entry.date);
-          final entryIndex = viewModel.entries.indexOf(entry);
+        entryWidgets.addAll(
+          entriesByMealType[mealType]!.map((entry) {
+            final Locale locale = Localizations.localeOf(context);
+            final DateFormat dateFormat = DateFormat.Hm(locale.toString());
+            final formattedTime = dateFormat.format(entry.date);
+            final entryIndex = viewModel.entries.indexOf(entry);
 
-          return GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onLongPress: () => _showDeleteMenu(context, entryIndex, viewModel),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBoxWithHeight.medium,
-                Text(
-                  formattedTime,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                SizedBoxWithHeight.small,
-                Row(
-                  children: [
-                    const Icon(Icons.local_fire_department,
-                        color: Colors.orange,),
-                    SizedBoxWithWidth.medium,
-                    SizedBox(
-                      width: 130.0,
-                      child: Text(
-                        '${entry.calories}',
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onLongPress: () =>
+                  _showDeleteMenu(context, entryIndex, viewModel),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBoxWithHeight.medium,
+                  Text(
+                    formattedTime,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  SizedBoxWithHeight.small,
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.local_fire_department,
+                        color: Colors.orange,
+                      ),
+                      SizedBoxWithWidth.medium,
+                      SizedBox(
+                        width: 130.0,
+                        child: Text(
+                          '${entry.calories}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      const Icon(Icons.fitness_center, color: Colors.blue),
+                      SizedBoxWithWidth.medium,
+                      Text(
+                        '${entry.protein}',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                    ),
-                    const Icon(Icons.fitness_center, color: Colors.blue),
-                    SizedBoxWithWidth.medium,
-                    Text(
-                      '${entry.protein}',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ],
-                ),
-                SizedBoxWithHeight.small,
-                Row(
-                  children: [
-                    const Icon(Icons.water_drop, color: Colors.red),
-                    SizedBoxWithWidth.medium,
-                    SizedBox(
-                      width: 130.0,
-                      child: Text(
-                        '${entry.fat}',
+                    ],
+                  ),
+                  SizedBoxWithHeight.small,
+                  Row(
+                    children: [
+                      const Icon(Icons.water_drop, color: Colors.red),
+                      SizedBoxWithWidth.medium,
+                      SizedBox(
+                        width: 130.0,
+                        child: Text(
+                          '${entry.fat}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                      const Icon(Icons.grass, color: Colors.yellow),
+                      SizedBoxWithWidth.medium,
+                      Text(
+                        '${entry.carb}',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                    ),
-                    const Icon(Icons.grass, color: Colors.yellow),
-                    SizedBoxWithWidth.medium,
-                    Text(
-                      '${entry.carb}',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ],
-                ),
-                SizedBoxWithHeight.medium,
-              ],
-            ),
-          );
-        }).toList(),);
+                    ],
+                  ),
+                  SizedBoxWithHeight.medium,
+                ],
+              ),
+            );
+          }).toList(),
+        );
       }
     }
 
@@ -283,7 +297,10 @@ class HomePage extends StatelessWidget {
   }
 
   void _showDeleteMenu(
-      BuildContext context, int entryIndex, HomePageViewModel viewModel,) {
+    BuildContext context,
+    int entryIndex,
+    HomePageViewModel viewModel,
+  ) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
