@@ -6,19 +6,22 @@ class DataEntry {
   int fat;
   int carb;
 
-  DataEntry(
-      {required this.date,
-      required this.calories,
-      required this.protein,
-      required this.fat,
-      required this.carb,
-      required this.type,});
+  DataEntry({
+    required this.date,
+    required this.calories,
+    required this.protein,
+    required this.fat,
+    required this.carb,
+    required this.type,
+  });
 
   Map<String, dynamic> toJson() => {
         'date': date.toIso8601String(),
         'type': type,
         'calories': calories,
         'protein': protein,
+        'fat': fat,
+        'carb': carb,
       };
 
   factory DataEntry.fromJson(Map<String, dynamic> json) {
