@@ -34,6 +34,8 @@ class DailyStats extends StatelessWidget {
         (goals.calorie > 0) ? totalCalories / goals.calorie : 0.0;
     final double proteinProgress =
         (goals.protein > 0) ? totalProtein / goals.protein : 0.0;
+    final double fatProgress = (goals.fat > 0) ? totalFat / goals.fat : 0.0;
+    final double carbProgress = (goals.carb > 0) ? totalCarb / goals.carb : 0.0;
 
     final Locale locale = Localizations.localeOf(context);
     final DateFormat dateFormat = DateFormat.MEd(locale.toString());
@@ -138,9 +140,9 @@ class DailyStats extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
               child: LinearProgressIndicator(
                 minHeight: 6,
-                value: proteinProgress > 1 ? 1 : proteinProgress,
+                value: fatProgress > 1 ? 1 : fatProgress,
                 backgroundColor: Colors.grey[300],
-                color: proteinProgress > 1 ? Colors.red : Colors.blue,
+                color: fatProgress > 1 ? Colors.red : Colors.blue,
               ),
             ),
             SizedBoxWithHeight.large,
@@ -169,9 +171,9 @@ class DailyStats extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
               child: LinearProgressIndicator(
                 minHeight: 6,
-                value: proteinProgress > 1 ? 1 : proteinProgress,
+                value: carbProgress > 1 ? 1 : carbProgress,
                 backgroundColor: Colors.grey[300],
-                color: proteinProgress > 1 ? Colors.red : Colors.blue,
+                color: carbProgress > 1 ? Colors.red : Colors.blue,
               ),
             ),
             SizedBoxWithHeight.medium,
