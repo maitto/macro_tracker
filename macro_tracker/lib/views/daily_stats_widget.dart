@@ -22,7 +22,7 @@ class DailyStats extends StatelessWidget {
       totalCalories += entry.calories;
       totalProtein += entry.protein;
       totalFat += entry.fat;
-      totalCarb = entry.carb;
+      totalCarb += entry.carb;
     }
 
     final int remainingCalories = goals.calorie - totalCalories;

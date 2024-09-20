@@ -15,10 +15,8 @@ class DataEntrySheetContent extends StatefulWidget {
 }
 
 class DataEntrySheetState extends State<DataEntrySheetContent> {
-  final TextEditingController _caloriesController =
-      TextEditingController(text: '');
-  final TextEditingController _proteinController =
-      TextEditingController(text: '');
+  final TextEditingController _caloriesController = TextEditingController();
+  final TextEditingController _proteinController = TextEditingController();
   final TextEditingController _fatController = TextEditingController();
   final TextEditingController _carbController = TextEditingController();
   String _selectedType = MealType.types.first;
